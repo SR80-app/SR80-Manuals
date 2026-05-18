@@ -2,7 +2,7 @@
 
 **App:** ShopTracker (SR80)
 **Version:** 1.4 (in development)
-**Last Updated:** 2026-05-14
+**Last Updated:** 2026-05-18
 ---
 
 ## Table of Contents
@@ -1650,7 +1650,25 @@ If a new admin hasn't set up their PIN yet (they'll have a gray **No PIN** badge
 2. Enter your own admin PIN to authorize
 3. Create and confirm a PIN for the new admin (4-8 digits)
 
-The new admin can change their PIN later through the same process, or by having their PIN reset first (see below).
+The new admin can change their PIN later themselves (see **Changing Your Own PIN** below), or have it reset first if they've forgotten it.
+
+#### Changing Your Own PIN
+
+If you know your current PIN and just want to change it (rotating a stale one, picking something easier to remember, etc.) you can do it yourself — no need to involve another admin:
+
+1. Open **Admin Settings** from the sidebar
+2. In the **My Account** section at the top, tap **Change My PIN**
+3. Enter your **current PIN** to confirm it's really you
+4. Enter your **new PIN** (4-8 digits)
+5. Confirm the new PIN
+
+That's it — your PIN is updated immediately on every device. The next time you unlock admin access anywhere, use the new one.
+
+A couple of guardrails:
+
+- You can only change **your own** PIN here. If someone else is logged in on the iPad and you type *their* current PIN by mistake, the app rejects it ("That PIN is not yours") — so leaving an admin-unlocked iPad on a workbench doesn't expose anyone else's account.
+- The new PIN has to be different from your current one.
+- If you don't remember your current PIN, you can't use this flow — you'll need another admin to reset it for you (see below).
 
 #### Resetting an Admin's PIN
 
@@ -2523,7 +2541,7 @@ If a specific piece of equipment has a history of suspicious warranty claims or 
 
 #### "Incorrect PIN"
 
-Double-check that you're entering your personal admin PIN (4-8 digits). PINs are per-person, not per-device. If you've forgotten your PIN, another admin can reset your PIN from Admin Settings → Employees — swipe left on your name and tap Reset PIN.
+Double-check that you're entering your personal admin PIN (4-8 digits). PINs are per-person, not per-device. If you've forgotten your PIN, another admin can reset your PIN from Admin Settings → Employees — swipe left on your name and tap Reset PIN. If you remember your PIN but want to change it, you can do that yourself from Admin Settings → My Account → Change My PIN.
 
 #### The app shows "Connecting..." on launch
 
