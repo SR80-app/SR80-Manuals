@@ -2,7 +2,7 @@
 
 **App:** ShopTracker (SR80)
 **Version:** 1.4 (in development)
-**Last Updated:** 2026-05-18
+**Last Updated:** 2026-05-20 (Cards / List view toggle added — pick a denser list layout for the Job Board and Work Queue from the sidebar; alphabetical sort toggle added in List view via the abc icon next to the search bar)
 ---
 
 ## Table of Contents
@@ -77,6 +77,7 @@
   - [Editing Cost on a Complete Item](#editing-cost-on-a-complete-item)
   - [Force-Completing an Item (Admin Only)](#force-completing-an-item-admin-only)
   - [Retro-Closing Open Work Orders (Admin Only)](#retro-closing-open-work-orders-admin-only)
+  - [Deleting a Job (Admin Only)](#deleting-a-job-admin-only)
   - [Reports](#reports)
   - [Resetting a Device](#resetting-a-device)
   - [Training Mode & Local Test Mode](#training-mode--local-test-mode)
@@ -217,6 +218,8 @@ If an admin temporarily unlocks a non-admin device (see "Admin Access on Non-Adm
 
 The grayed-out items are there so everyone can see what the app can do — they just can't access views that aren't meant for their device's role.
 
+**Cards / List view toggle:** Directly under the highlighted **Jobs** row (Front Counter) or **Work Queue** row (Tech Station), you'll see a small **Cards | List** segmented picker. This switches the board between the photo-card grid you've been using and a denser list layout. The choice sticks per iPad and is shared between both boards on that device. See [Cards or List View under the Job Board](#cards-or-list-view) and the matching section under Tech Station for what each layout shows.
+
 Below the main destinations, the sidebar has two more sections:
 
 **Quick Start Guides** — Two built-in PDF guides that walk through the basics:
@@ -313,6 +316,25 @@ Jobs are sorted by urgency: green (ready for pickup) first, then orange (tested)
 The Job Board updates automatically when jobs are created or changed on any device — you don't need to do anything to see new work orders appear. If you ever want to force an immediate refresh, pull down on the board.
 
 Tap the **new job button** (document with a plus badge, in CAT yellow) to create a new work order. On iPad, it's in the top right corner of the toolbar. On iPhone, it's at the bottom right of the screen (like the compose button in Apple Notes).
+
+#### Cards or List View
+
+The Job Board can be shown two ways and you can pick whichever you find easier to scan. Open the sidebar (swipe from the left edge, or tap the back arrow) — directly under the highlighted **Jobs** row you'll see a small **Cards | List** toggle. Tap whichever one you want. The choice sticks per iPad — Jamie's front counter can stay on List while another device stays on Cards. The same toggle also lives under **Work Queue** when you have that selected, so techs in the back can switch independently.
+
+**Cards** is the default — the photo-grid you've been using. Best when you want to recognize a job by the equipment photo at a glance.
+
+**List** is a denser layout — one job per row, no photos. Each row has:
+
+- A **colored stripe** down the left edge that summarizes the statuses of every item on the job. A job with two items both at Complete shows a solid green stripe; a job with one item In Progress and one item Ready for Testing shows half yellow + half orange. The stripe colors match the legend bar at the top of the list (Checked In = blue, In Progress = yellow, Ready for Testing = orange, Complete = green, Closed = gray, Totaled = black). Disassembly appears in the legend only when that step is turned on in Admin Settings; Tested doesn't get its own slot because passing a test moves the item straight to Complete and failing sends it back to In Progress, so it never sits in that state for long.
+- **Line 1:** job number, 🔥 if any item is on fire, customer name, company name (smaller and muted if it's set), and any badges that apply (WARRANTY, WAITING, TRAINING, TEST, NO WARRANTY).
+- **Line 2:** a summary like "3 items: Cylinder, Cylinder, Motor" on the left, and the **tappable customer phone number** on the right. Tap the phone number to call or text the customer right from the list — no need to open the job first.
+- **Line 3:** a per-status count breakdown (e.g., "● 2 Complete · 1 In Progress"), the techs working the job, the total cost so far, and how long ago the job was created.
+
+Tap any row to open the full job detail, same as tapping a card. The **Closed** section appears at the bottom as a collapsible row showing how many closed jobs match your current search and filters; tap it to expand and see them dimmed.
+
+**Sort the list alphabetically:** When you're in List view, a small **abc** icon shows up in the toolbar next to the search bar. Tap it to switch the list to alphabetical order by customer name (A → Z). Tap it again to go back to the default urgency-based order. The icon turns CAT yellow when alphabetical sort is on so you can tell at a glance which order you're looking at. The sort applies to both the active list and the Closed section. Like the Cards / List choice, the sort preference sticks per iPad. The icon doesn't show in Cards view — there, the urgency order is the whole point of the photo grid, so sorting alphabetically would defeat the purpose.
+
+Search, filters, and the COMPLETE quick-filter all work the same way in both views — the toggle only changes how the matching jobs are laid out, not which jobs are shown.
 
 ### Searching and Filtering Jobs
 
@@ -452,6 +474,22 @@ Photos appear as small thumbnails in a grid below the buttons. To remove a photo
 
 There's no limit on photos per item. Take as many as you need.
 
+#### Recording or Picking a Video During Intake
+
+The same photo strip has a **Video** button (the one with the video camera glyph). Use it when a still photo isn't enough — leaks under pressure, a noise the customer is hearing, a sequence the tech needs to watch in motion.
+
+Tap **Video** and a small menu pops up with three choices:
+
+- **Record Video** — opens the in-app recorder. Tap the red shutter to start, tap again to stop. Recording is capped at **60 seconds** so the clip stays small enough to upload reliably from the shop's WiFi. A timer counts up while you're recording so you can see how much room is left.
+- **Choose from Library** — opens the device's Photos library filtered to videos only. Useful when somebody snapped a clip on this iPad before opening ShopTracker, or when the customer AirDropped a video over. Pick the clip and the app pulls it in.
+- **Cancel** — backs out without doing anything.
+
+Either way, the captured video appears as a small thumbnail tile in the same strip as the photos, with a play arrow overlay and the duration shown in the corner (e.g., `0:34`). Tap the **X** to remove it before saving the work order.
+
+**60-second cap on Library picks too.** If you choose a video longer than 60 seconds from the library, the app will reject it with a "Video is too long" message. Trim it in the Photos app first and try again.
+
+**Where the video lives:** The video file itself stays in this iPad's Photos library — only a thumbnail and a pointer get uploaded to the server. That keeps storage costs sane and uploads fast, but it also means **the full video can only be played back on the iPad it was recorded or picked on.** Other devices see the thumbnail with a small "On [device name]" label so you know where to find it if you need to watch it. For the shop, this is fine — videos are usually a "tech needs to see this" thing and the recording iPad is right there in the bay.
+
 #### Equipment Tags (QR Codes)
 
 If the equipment has a sticker tag, tap **Scan Tag** in the item form and point the camera at it. The app links the sticker to this item. For the full tags workflow — printing stickers, what to do with returning equipment, reprinting a damaged tag — see the **Equipment Tags** section near the end of this manual.
@@ -540,6 +578,24 @@ You can delete any photo from an item that isn't Closed, from **any device** —
 - **Front Counter and Tech Station devices**: after you confirm, an **admin PIN entry** screen appears. Enter a valid admin PIN and the photo is deleted. Tap Cancel to back out — nothing is deleted. This is a one-time check; entering the PIN does not unlock admin features on your device.
 
 The photo, its markup, and all associated files are permanently removed. This cannot be undone. Closed items do not allow photo deletion at all.
+
+#### Adding and Playing Videos
+
+Videos live in the same thumbnail strip as photos, just with a play arrow overlay and the duration shown in the corner. They sort before the photos so they're easy to spot.
+
+To **add a video** to an item, tap the **Video** button in the strip (next to Camera and Library). A small menu opens:
+
+- **Record Video** — opens the in-app recorder. Tap the red shutter to start, tap again to stop. Hard-capped at **60 seconds** — there's a timer on screen so you can see the budget. When you stop, the clip gets saved to this iPad's Photos library and a thumbnail uploads to the server.
+- **Choose from Library** — opens the Photos picker filtered to videos only. Pick the one you want. The 60-second cap still applies — videos longer than that are rejected with a "Video is too long" message. Trim it in the Photos app first.
+- **Cancel** — closes the menu.
+
+The new video appears in the strip with a brief "Saving video..." indicator while the thumbnail uploads. You can add videos at any item status that allows photos — checked-in, in-progress, complete — same rules as photos.
+
+**Playing a video.** Tap the video tile to open the player. If the video was recorded or picked on the iPad you're using, it plays normally — full-screen, scrub bar, the usual controls. Tap **Done** in the top-left to close.
+
+If the video was recorded on a different iPad, the thumbnail shows a small **"On [device name]"** label at the bottom (e.g., "On Back Shop Tech Station"), and tapping it opens a **"Video Unavailable"** screen explaining where to find it. This is by design — the video file stays in the recording device's Photos library, and only the thumbnail + pointer get synced to the server. To watch it, walk over to the iPad named on the label.
+
+**Deleting a video.** Long-press the video tile and tap **Delete Video** in the menu. Same gating as photos — admin devices delete immediately, Front Counter and Tech Station prompt for an admin PIN first. Closed items don't allow video deletion.
 
 #### Reordering Photos (Make Hero Image)
 
@@ -1183,6 +1239,23 @@ Items with the READY badge also have a warm orange tint on the card so they stan
 
 **Needs Price items** — when a tester passes an item but no cost has been entered yet, the queue card shows a green **"Needs Price"** capsule (with a $ icon) instead of the plain "Tested" status text, and the card itself gets a soft green tint. These float just below Zone Assignment so when the customer calls back with a quote you can find the item fast. To enter the price, tap into the item detail and use the normal **Cost** button — once a price is recorded, the badge goes away and the item moves on through the workflow.
 
+#### Cards or List View
+
+Just like the Job Board, the Work Queue can be shown as photo cards (the default) or as a denser list. Open the sidebar and you'll find a **Cards | List** toggle directly under the highlighted **Work Queue** row. Pick whichever lets you scan the queue faster. The choice sticks per iPad — set it once and forget it.
+
+**List view shows one item per row** (not one job per row — the Work Queue is item-centric):
+
+- A **colored stripe** down the left edge in the color of that item's current status. Yellow for In Progress, orange for Ready for Testing, blue for Checked In, green for Complete, and so on. The legend at the top of the list spells out every color. Disassembly appears in the legend only when that step is turned on in Admin Settings.
+- **Line 1:** the full item reference (e.g., `20260518-3-1`), the equipment type, 🔥 if it's on fire, and badges that apply (WAITING, WARRANTY, TRAINING, TEST, NEEDS PRICE, ASSIGN ZONE, NO WARRANTY).
+- **Line 2:** customer name and **tappable phone number** on the left, the tech(s) on the item on the right. Tap the phone to call or text without opening the item first.
+- **Line 3:** the status (colored dot + label like "In Progress" or "Ready for Testing"), cost if entered, zone if assigned, and how long ago the item was checked in.
+
+Tap any row to open the full item detail, same as tapping a card. The **Completed** section appears at the bottom as a collapsible row — tap to expand and see items that have already been finished.
+
+**Sort the list alphabetically:** Same as the Job Board — a small **abc** icon appears in the toolbar next to the search bar when you're in List view. Tap it to sort by customer name (A → Z); tap again to return to the default urgency order (On Fire → Assign Zone → Needs Price → Ready for Testing → Disassembly → In Progress → Checked In). The icon turns CAT yellow when alphabetical is on. The preference is shared with the Job Board — if you set the front counter iPad to alphabetical, the work queue stays alphabetical too on the same device.
+
+Search and filters work the same way in both views — the toggle only changes how the matching items are laid out.
+
 **Waiting items** — items blocked on parts, seals, or approval have an **indigo border** and **⏳ badge**. They sink to the **bottom** of the queue so active work stays front and center. See ["Waiting" Flag (⏳) — Tech Station](#waiting-flag--tech-station) below for how to set and clear them.
 
 Tap any card to open the item detail view with actions for whatever the item needs next.
@@ -1238,6 +1311,12 @@ Tap any thumbnail to view the photo full-screen. If the item has multiple photos
 If you snap a bad photo while the camera is open, tap the **X** on its thumbnail in the camera strip to remove it right away. Once a photo is uploaded, only an admin can delete it (see "Deleting Photos" in the Front Counter section above).
 
 To change which photo is the hero (the big square at the top), **press and hold** on any thumbnail and tap **Make Hero Image**. See "Reordering Photos (Make Hero Image)" in the Front Counter section above for full details.
+
+#### Adding Videos from the Tech Station
+
+The same thumbnail strip has a **Video** button. Tap it and you get the same menu the front counter sees: **Record Video** (in-app recorder, 60-second cap), **Choose from Library** (Photos picker filtered to videos), or **Cancel**. Use it when you want to capture a leak under pressure, the way something sounds when it runs, or any motion the front counter or next tech needs to see.
+
+The video lands in the strip with a play arrow and duration badge. Playback only works on the iPad it was recorded or picked on — other devices see a thumbnail with an "On [device name]" tag so they know where to find it. See "Adding and Playing Videos" in the Front Counter section above for the full rules on playback, the duration cap, and deletion.
 
 #### Marking Up Photos (Tech Station)
 
@@ -2108,6 +2187,55 @@ A list of every job that still has at least one non-terminal item, grouped by jo
 Each close attribution shows the admin who PIN'd in. Items land at **Admin Retro-Closed** — a distinct terminal state so reports can split natural completions from backfilled ones. **No customer notifications fire** — the customer already got the item.
 
 **Reminder:** Don't use retro-close for items that just got stuck on the cost-entry step. Those should use **Force-Complete** above — lands them at Complete (the normal flow's terminal-ready state) so the close looks identical to a natural completion.
+
+### Deleting a Job (Admin Only)
+
+For accidental duplicates and test data that slipped through the cracks. **This is permanent and there is no undo.** Deliberately buried at the bottom of the Shop section with friction at every step so nobody nukes a real job by muscle memory.
+
+**How to get there:**
+
+1. Open the sidebar and tap **Admin Settings**
+2. Scroll to the **Shop** section
+3. Tap **Delete Job** (the red one with the trash icon, last in the list)
+
+**The flow — five gates before anything dies:**
+
+1. **Type the job number manually** in the text field (e.g. `20260518-2`). There's no picker and no search on purpose — typing the number yourself is the first sanity check. Case-sensitive.
+2. Tap **Look Up**. A preview card shows the customer, company, warranty/draft/test badges, creation date, and every item on the job with its status. This is your "wait, is this the right one?" moment.
+3. If the preview looks right, tap the red **Delete This Job** button.
+4. A confirmation alert appears: **"Are you absolutely fucking sure?"** Two buttons: **Nope** (cancel) or **Hell yes I'm sure** (destructive).
+5. If you pick "Hell yes I'm sure," the admin PIN prompt appears. Enter your PIN.
+
+After the PIN clears, the job is gone. A success alert confirms with the job number you deleted, then the form resets to empty.
+
+**What gets deleted:**
+
+- The job row
+- Every item on the job
+- All photos (database rows AND the actual image files in Storage)
+- All videos (the local-storage thumbnails get cleaned up too)
+- All tests, oil samples, repair history, tech assignments, and tech history
+- All notes and issue checks
+- All material lines (hoses, fittings, adapters, seals)
+- All flag history tied to the job or its items
+- Audit log entry stamping which admin pulled the trigger, with item/photo/video counts
+
+**When this won't work:**
+
+- No internet — Storage file cleanup can't run offline, so the whole action is blocked. The error message will say so.
+- Job number doesn't exist — lookup fails with "No job found."
+- Wrong PIN — same lockout behavior as any other admin action (five strikes and the device is locked out for a minute).
+
+**When to use vs. not use:**
+
+- ✅ Test data that should never have been saved (a draft you experimented with, a real job number burned during testing)
+- ✅ A duplicate work order you created by accident
+- ✅ A job from years ago that's polluting reports and isn't worth preserving
+- ❌ A real job you don't like the look of — close it instead, or use Force-Complete / Retro-Close if the workflow got skipped
+- ❌ A warranty job whose parent reference matters — deletion sets the parent reference on any child warranty jobs to null, which makes the warranty chain harder to follow later
+- ❌ A job a customer just picked up — the customer's history record vanishes too
+
+The action is logged in the audit table with the admin's employee ID, the job number, and counts of what got deleted, so there's a paper trail even after the rows are gone.
 
 ### Reports
 
