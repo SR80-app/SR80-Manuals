@@ -2,7 +2,7 @@
 
 **App:** ShopTracker (SR80)
 **Version:** 1.4 (in development)
-**Last Updated:** 2026-05-20 (Cards / List view toggle added — pick a denser list layout for the Job Board and Work Queue from the sidebar; alphabetical sort toggle added in List view via the abc icon next to the search bar)
+**Last Updated:** 2026-06-01 (WIP)
 ---
 
 ## Table of Contents
@@ -97,7 +97,7 @@
   - [Assigning a Tag After Check-In](#assigning-a-tag-after-check-in)
   - [Replacing a Tag](#replacing-a-tag)
   - [Scanning Old / Retired Tags](#scanning-old--retired-tags)
-  - [Scanning Tags on Closed or Totaled Items](#scanning-tags-on-closed-or-totaled-items)
+  - [Scanning Tags on Closed or Junk Items](#scanning-tags-on-closed-or-junk-items)
   - [When There's No Tag](#when-theres-no-tag)
   - [Flagging Equipment](#flagging-equipment)
 - [Reference & Troubleshooting](#reference--troubleshooting)
@@ -303,7 +303,7 @@ Photos load in the background — you'll see the cards appear right away with pl
 
 **Draft work orders** appear at the top with an orange "DRAFT" badge and a warm-tinted background so they stand out as unfinished.
 
-Each item shows its own status on its photo tile. When an item has been priced and approved (Complete status), a green **COMPLETE** badge appears in the top-left of that item's tile and the status dot disappears. Similarly, if an item has been marked as **Totaled** (unfixable), a dark **TOTALED** badge appears in the same spot, replacing the status dot. When an item's repair is done and it's waiting to be tested, an orange **READY FOR TESTING** badge appears — this tells you the tech is finished and the item just needs its final test before pricing. A job with two items can show one COMPLETE tile and one still-in-progress tile at the same time. Warranty items show a red **WARRANTY** badge below the status badge — you might see COMPLETE + WARRANTY or TOTALED + WARRANTY stacked together. Use the **COMPLETE filter** (see below) to quickly see all jobs where every item is ready for pickup.
+Each item shows its own status on its photo tile. When an item has been priced and approved (Complete status), a green **COMPLETE** badge appears in the top-left of that item's tile and the status dot disappears. Similarly, if an item has been marked as **Junk** (unfixable), a dark **JUNK** badge appears in the same spot, replacing the status dot. When an item's repair is done and it's waiting to be tested, an orange **READY FOR TESTING** badge appears — this tells you the tech is finished and the item just needs its final test before pricing. A job with two items can show one COMPLETE tile and one still-in-progress tile at the same time. Warranty items show a red **WARRANTY** badge below the status badge — you might see COMPLETE + WARRANTY or JUNK + WARRANTY stacked together. Use the **COMPLETE filter** (see below) to quickly see all jobs where every item is ready for pickup.
 
 **Flagged customers:** If a customer (or their company) has been flagged, you'll see a small amber **flag icon** on their job cards. This is a heads-up that there's something to be aware of — tap into the job to see the full flag banner with the reason. See [Flagging a Customer](#flagging-a-customer) for details.
 
@@ -325,7 +325,7 @@ The Job Board can be shown two ways and you can pick whichever you find easier t
 
 **List** is a denser layout — one job per row, no photos. Each row has:
 
-- A **colored stripe** down the left edge that summarizes the statuses of every item on the job. A job with two items both at Complete shows a solid green stripe; a job with one item In Progress and one item Ready for Testing shows half yellow + half orange. The stripe colors match the legend bar at the top of the list (Checked In = blue, In Progress = yellow, Ready for Testing = orange, Complete = green, Closed = gray, Totaled = black). Disassembly appears in the legend only when that step is turned on in Admin Settings; Tested doesn't get its own slot because passing a test moves the item straight to Complete and failing sends it back to In Progress, so it never sits in that state for long.
+- A **colored stripe** down the left edge that summarizes the statuses of every item on the job. A job with two items both at Complete shows a solid green stripe; a job with one item In Progress and one item Ready for Testing shows half yellow + half orange. The stripe colors match the legend bar at the top of the list (Checked In = blue, In Progress = yellow, Ready for Testing = orange, Complete = green, Closed = gray, Junk = black). Disassembly appears in the legend only when that step is turned on in Admin Settings; Tested doesn't get its own slot because passing a test moves the item straight to Complete and failing sends it back to In Progress, so it never sits in that state for long.
 - **Line 1:** job number, 🔥 if any item is on fire, customer name, company name (smaller and muted if it's set), and any badges that apply (WARRANTY, WAITING, TRAINING, TEST, NO WARRANTY).
 - **Line 2:** a summary like "3 items: Cylinder, Cylinder, Motor" on the left, and the **tappable customer phone number** on the right. Tap the phone number to call or text the customer right from the list — no need to open the job first.
 - **Line 3:** a per-status count breakdown (e.g., "● 2 Complete · 1 In Progress"), the techs working the job, the total cost so far, and how long ago the job was created.
@@ -350,7 +350,11 @@ On iPad, the **search bar** and **filter button** (circle with three lines) sit 
 
 The search checks all items within each job, so searching "Pump" will show any job that has at least one pump in it. Tap the **X** in the search bar to clear your search and see all jobs again.
 
-**Complete filter:** Next to the search bar you'll also see a small, green **COMPLETE** button. Tap it to instantly show only jobs where every item is ready for pickup — the same jobs that have a green "COMPLETE" badge on their card. Tap it again to show all jobs. This is the fastest way to see exactly what's waiting at the counter.
+**Quick filter pills:** Next to the search bar you'll see two small pills — yellow **ACTIVE** and green **COMPLETE** — sitting side by side.
+
+- Tap **ACTIVE** to show only jobs that are still being worked on (anything with at least one item in Checked In, Disassembly, In Progress, or Ready for Testing). This is the fastest way to focus on jobs that still need shop attention and tune out everything that's already done.
+- Tap **COMPLETE** to instantly show only jobs where every item is ready for pickup — the same jobs that have a green "COMPLETE" badge on their card. This is the fastest way to see exactly what's waiting at the counter.
+- The two pills are mutually exclusive — tapping one automatically turns the other off (a job can't be both fully complete and still being worked on at the same time). Tap a lit pill again to turn it off and see all jobs.
 
 **Filtering:** Tap the filter button (circle with three lines) to open a filter sheet with dropdown pickers:
 
@@ -369,7 +373,7 @@ If your search or filters don't match any jobs, you'll see a "No Matching Jobs" 
 
 At the bottom of the Job Board, you'll see a **Closed** section with a count of how many jobs are fully closed. This section is collapsed by default so it doesn't clutter the active board.
 
-Tap the **Closed** header to expand it. You'll see the same card grid as above, but for jobs that are done — all items closed (including Totaled items that were closed via "Customer Contacted"). The cards are slightly dimmed so they're easy to tell apart from active jobs.
+Tap the **Closed** header to expand it. You'll see the same card grid as above, but for jobs that are done — all items closed (including Junk items that were closed via "Customer Contacted"). The cards are slightly dimmed so they're easy to tell apart from active jobs.
 
 Tap the header again to collapse the section back down.
 
@@ -385,42 +389,43 @@ This is useful for looking up past work — warranty questions, repeat customers
 
 **Reopening an item:** If a closed item needs to come back through the shop (a customer returns, something wasn't right), an admin can tap **Reopen Item** on that item's card. After confirming, the item moves back to **Complete** status and becomes actionable again — the front counter will see it in the active board and can close it again once the customer's situation is resolved.
 
-**Legacy auto-closed Totaled items:** Older versions of the app auto-closed Totaled items the moment you tapped Customer Contacted. If you have older jobs in the Closed bucket that were really still awaiting customer settlement, an admin can tap **Reopen Item** on them — the system recognizes those came from the Totaled path and routes them back to **Totaled** (not Complete), preserving the original customer-contact log. The job pops back onto the active board with the gray **Close** button already visible so you can settle and close them when the customer comes in.
+**Legacy auto-closed Junk items:** Older versions of the app auto-closed Junk items the moment you tapped Customer Contacted. If you have older jobs in the Closed bucket that were really still awaiting customer settlement, an admin can tap **Reopen Item** on them — the system recognizes those came from the Junk path and routes them back to **Junk** (not Complete), preserving the original customer-contact log. The job pops back onto the active board with the gray **Close** button already visible so you can settle and close them when the customer comes in.
 
 **Reopening an entire work order:** If a whole job was closed by mistake, an admin can long-press the job card (from the Closed section on the Job Board, or from the customer's job history in the Customers view) and tap **Reopen Work Order**. An optional reason field appears — fill it in or leave it blank, then confirm. Every item on the job moves back to Complete status, the job reappears on the active board on all devices, and the reason (if entered) is logged in the audit trail. The original closure date and who closed it are preserved — reopening doesn't erase history, it just picks up where things left off.
 
 ### Creating a New Work Order
 
-Tap the new job button from the Job Board to start a new work order (bottom-right on iPhone, top-right toolbar on iPad). The form has two main sections: **Customer / Company** (one card with both fields) and **Items**.
+Tap the new job button from the Job Board to start a new work order (bottom-right on iPhone, top-right toolbar on iPad). The form has two main sections: **Customer** (one card with a single search) and **Items**.
 
 #### Finding or Adding a Customer
 
-At the top of the form, the **Customer** field comes first. Start typing a customer's name, the company they work for, or their phone number — any one of those will pull up matching customers below the search field as you type. Tap a result to select them. Searching by company name is handy when you remember the business but not the contact (e.g. typing "Action Mobile RV" surfaces every customer linked to that company).
+At the top of the form is one search field labelled **Customer**. Start typing a customer's name, the company they work for, or their phone number — any of those will pull up matches below the search as you type. The dropdown surfaces two kinds of rows:
 
-If the customer isn't in the system yet, tap **+ Add New Customer** to create one. The new customer form includes:
+- **People** — the customer's name, with their company shown in smaller text underneath, and their phone on the right. Tap to select.
+- **Companies** — companies that match the search but aren't already represented by a person above (building icon, "Company" label underneath, "Tax Exempt" badge if applicable). Tap to lock in just the company.
 
-- **Name** — if you type a multi-word business name ending in a suffix like Inc, LLC, Corp, Co., or Ltd (e.g. "Smith Co."), the app will automatically move it to the Company field when you tap into the next field. It won't trigger on bare "Co" without a period, so names like "Collins" or "Cooper" won't get swiped. Each word auto-capitalizes as you type. You can leave this blank if you have a company name instead — at least one of Name or Company is required.
-- **Company** — pre-filled if you already selected a company on the main form. Use the **Swap** button if the name/company got put in the wrong field. You can leave this blank if you have a customer name instead — at least one of Name or Company is required.
-- **Phone** (required, 10 digits) — formats automatically as you type. If the phone number is already on file for another customer, you'll be warned and can choose to use the existing customer instead
+Searching by company name surfaces both — every customer at that company on the people rows, plus the company itself as its own row. Handy when you remember the business but not the contact, or when you're checking something in under a company with no specific point person yet.
+
+**Selecting a customer:** Tap a person row. The card collapses to a locked-in customer row showing their name, company, and phone. The company is filled in automatically — you don't type it twice. Tap the **X** to clear and start over.
+
+**Selecting a company-only match:** Tap a company row. The card collapses to a locked-in company row, and underneath you'll see:
+
+- A row of customer name chips if other people have checked in under that company before (e.g., "Rick M. | Dave S. | + New") — tap a chip to attach that person, or tap **+ New** to add someone new.
+- A persistent **+ Add Customer to [Company]** button — tap it any time to add a name, phone, and email under this company.
+- A green "Tax exempt (via [Company])" indicator in the footer if the company is flagged tax-exempt.
+
+**Adding a brand-new customer (or company):** If nothing in the dropdown matches what you typed, tap **+ Add New Customer**. The new-customer sheet opens with whatever you typed prefilled. It includes:
+
+- **Name** — if you type a multi-word business name ending in a suffix like Inc, LLC, Corp, Co., Ltd, Construction, Contracting, Excavating, Trucking, Equipment, Rentals, Mechanical, Plumbing, Electric, Roofing, Landscaping, Engineering, Manufacturing, Welding, Repair, Farms, or Ranch (e.g. "Hijinx Construction", "Bob's Excavating"), the app auto-routes it to the Company field instead. It won't trigger on bare "Co" without a period, so last names like "Collins" or "Cooper" stay put. Each word auto-capitalizes as you type. Leave Name blank if you only have a company — at least one of Name or Company is required.
+- **Company** — pre-filled if you already selected a company on the main form, or if your typed text matched one of the business-suffix patterns above. Use the **Swap** button if Name and Company got crossed. If you type a company that isn't in the system yet, the app creates it on save (case-insensitive duplicate check — you won't end up with two "Cisco" records). You can fill in the company's phone, email, tax-exempt status, and notes later from the **Companies** sidebar entry.
+- **Phone** (required, 10 digits) — formats automatically as you type. If the phone number is already on file for another customer, you'll be warned and can choose to use the existing customer instead.
 - **Email** (optional)
 - **Tax Exempt** toggle
-- **Add a Contact** (optional) — tap to expand and add a contact person (name, phone, email, role). Useful for commercial accounts where someone other than the customer will be the point of contact. You can add more contacts later from the customer detail screen.
+- **Add a Contact** (optional) — tap to expand and add a contact person (name, phone, email, role). Useful for commercial accounts where someone other than the customer is the day-to-day point of contact. You can add more contacts later from the customer detail screen.
 
-#### Company (Optional)
+**Walk-ins:** If the customer is an individual with no company, just pick or create them — there's no separate company step.
 
-Below the Customer field, in the same card, is the **Company** field. Start typing a company name and matching companies will appear as suggestions. Tap a suggestion to select that company.
-
-**Adding a new company:** If the company isn't in the system yet, just type the full name into the Company field and keep going — there's no separate "Add New Company" button anymore. When you save the work order, the app creates the company record automatically using whatever you typed. If the name happens to match an existing company (case-insensitive), you'll get linked to the existing record instead of a duplicate. You can fill in the company's phone, email, tax-exempt status, and notes later from the **Companies** sidebar entry.
-
-**What happens when you select a company:**
-- A row of customer name chips appears between the Customer and Company fields (e.g., "Rick M. | Dave S. | + New") — these are people who've checked in under that company before. Tap a name to auto-fill their info instantly. Tap "+ New" to enter a new person.
-- If the company is **tax exempt**, you'll see a green indicator: "Tax exempt (via ABC Construction)" in the footer below the card. The tax status comes from the company automatically.
-
-**Customer fills in the company automatically:** If you select a customer who's already linked to a company (or create a new customer with a company name), the Company field will auto-fill. You don't need to type it twice — the app connects the dots for you.
-
-**Walk-ins:** If the customer is an individual (not from a company), just skip the Company field entirely. It's optional — leaving it blank works exactly like before.
-
-**Company-only jobs:** If you know the company but don't have an individual contact name, that's fine — just fill in the Company field and skip the Customer field. The work order will be linked to the company without requiring a customer contact. You can always add a customer later by editing the job.
+**Company-only jobs:** When you only have a company (no specific contact name), tap the company row in the dropdown. The work order links to the company; you can still add a customer later from the **+ Add Customer to [Company]** button below it, or by editing the job after save.
 
 #### Adding Items
 
@@ -455,7 +460,7 @@ If the entire job is warranty work — the customer brought something back in fo
 - **The original job IS in ShopTracker** → use the **Warranty Check-In** flow from the Job Board. See "Warranty Check-In" below.
 - **The original job is NOT in ShopTracker** (done on paper, before the app existed, at another location) → create the work order like normal, then open the job detail view and tap the red **Warranty** pill in the warranty card near the top of the screen. It uses the exact same pill styling as the item-level pill so you know it's the same concept, just applied to the whole job. Toggling it on locks the cost at $0 for all items and shows the **WARRANTY** badge on the gallery card.
 
-You can toggle the job-level Warranty pill any time after check-in too, as long as at least one item is still active (not Closed or Totaled). This is useful when the customer calls back after drop-off and confirms something was under warranty, or when you discover the equipment's repair history during inspection. Once every item on the job is Closed or Totaled, the toggle locks to prevent retroactively flipping warranty on a wrapped-up job.
+You can toggle the job-level Warranty pill any time after check-in too, as long as at least one item is still active (not Closed or Junk). This is useful when the customer calls back after drop-off and confirms something was under warranty, or when you discover the equipment's repair history during inspection. Once every item on the job is Closed or Junk, the toggle locks to prevent retroactively flipping warranty on a wrapped-up job.
 
 Tap **+ Add Item** to add more items to the same work order (e.g., a customer drops off 3 cylinders at once).
 
@@ -539,7 +544,7 @@ If you see one of these banners on a job, **don't create a duplicate work order 
 
 You may also see a similar warning when you tap **Create Work Order**: an alert titled **"Work order saved with issues"** means the job did make it to the server, but a piece of the data (usually the customer link, sometimes the company link on a customer who was just created with a brand-new company) didn't arrive. Tap OK, head to the Job Board, find the new work order, and use the red banner inside to fix it. If the alert specifically mentions the company link, open the customer record from the Customers tab and re-select the company there — the broken link lives on the customer, not on the work order. This is different from the **"Couldn't save work order"** alert, which means the save failed completely and you'll need to try again.
 
-Below the header, each **item** gets its own card. On jobs with multiple items, **items that are ready for action float to the top automatically** — Complete items appear first (ready for customer pickup and payment), then Totaled items (awaiting customer contact), then everything else in their normal order. This means you always see what needs your attention first, without scrolling past items that are still being worked on.
+Below the header, each **item** gets its own card. On jobs with multiple items, **items that are ready for action float to the top automatically** — Complete items appear first (ready for customer pickup and payment), then Junk items (awaiting customer contact), then everything else in their normal order. This means you always see what needs your attention first, without scrolling past items that are still being worked on.
 
 Each item card shows:
 
@@ -558,7 +563,7 @@ On jobs with multiple items, the detail view can get long. Each item card has a 
 
 This is handy when you're done reviewing one item and want to get to the next without scrolling past a wall of photos and notes.
 
-**Smart auto-collapse:** On jobs with 3 or more items, any items that are already **Closed** will automatically collapse when you open the job. Totaled and active items stay expanded so you can see and act on them immediately. You can always expand a closed item by tapping its chevron if you need to review it.
+**Smart auto-collapse:** On jobs with 3 or more items, any items that are already **Closed** will automatically collapse when you open the job. Junk and active items stay expanded so you can see and act on them immediately. You can always expand a closed item by tapping its chevron if you need to review it.
 
 **Collapse All / Expand All:** On jobs with 3+ items, you'll see a small **"Collapse All"** or **"Expand All"** link in accent color (yellow) above the item list. Tap it to collapse or expand everything at once — useful when you just want to scan the status of each item without the full detail.
 
@@ -649,7 +654,7 @@ Each event in the timeline shows a timestamp and looks like this:
 - **Oil: Clean / Dirty — [performer]** — if an oil sample was taken
 - **Marked Waiting — [reason]** — when a tech marked the item as waiting, with the reason (e.g., "Waiting on Parts" or "Other: waiting on custom seals from Parker") and any notes. The tech's name appears below.
 - **Resumed Work** — when the waiting flag was cleared and work resumed. Shows the tech's name.
-- **Customer Contacted — [outcome]** — on Totaled items that were closed via the "Customer Contacted" flow, shows the contact outcome (e.g., "Left voicemail", "Customer coming in") and when it happened. Only appears on items that went through the Totaled path.
+- **Customer Contacted — [outcome]** — on Junk items that were closed via the "Customer Contacted" flow, shows the contact outcome (e.g., "Left voicemail", "Customer coming in") and when it happened. Only appears on items that went through the Junk path.
 
 If a cost has been recorded, a **cost summary** appears below the timeline showing the total. If parts and labor were entered separately, it shows a breakdown (Parts / Labor / Tax / Total). A green **"Approved"** badge or orange **"Pending Approval"** badge shows the manager approval status.
 
@@ -724,7 +729,7 @@ On **finalized work orders** (non-drafts), you'll also see a **+** button in the
 - **Still in check-in** (all items at Checked In): Front Counter and Admin can add items.
 - **Any item past check-in** (In Progress, Tested, Complete, etc.): Only Admin or an elevated Front Counter (admin PIN unlocked) can add items. This prevents the front counter from injecting items into an active repair without admin oversight.
 - **Tech Station**: Never — techs don't check stuff in.
-- **Fully closed job** (all items Closed or Totaled): Nobody can add items.
+- **Fully closed job** (all items Closed or Junk): Nobody can add items.
 
 #### Removing an Item from a Draft
 
@@ -744,7 +749,7 @@ A confirmation sheet will appear asking you to confirm — tap **Delete Draft** 
 
 Deletion requires an internet connection. If the app is offline, you'll see an error message — try again once you're back online.
 
-Only drafts can be deleted this way. Finalized work orders cannot be deleted (use the Close or Totaled workflow instead).
+Only drafts can be deleted this way. Finalized work orders cannot be deleted (use the Close or Junk workflow instead).
 
 ### Editing a Checked-In Item
 
@@ -939,11 +944,11 @@ When the customer comes back for the rest, the cost summary card at the top will
 
 Once the last item on a job is closed, the view automatically takes you back to the Job Board. The job moves from the active grid to the **Closed** section at the bottom (collapsed by default — tap the header to expand it).
 
-#### Totaled Items — "Customer Contacted" then Close
+#### Junk Items — "Customer Contacted" then Close
 
-Totaled items now close the **same way as normal items** — they just have an extra step in front: you log that you contacted the customer, then close like anything else. They sit on the board with a **TOTALED** banner until both steps are done.
+Junk items now close the **same way as normal items** — they just have an extra step in front: you log that you contacted the customer, then close like anything else. They sit on the board with a **JUNK** banner until both steps are done.
 
-When you open a job with a Totaled item, you'll see:
+When you open a job with a Junk item, you'll see:
 
 - The item's cost (if the tech entered a diagnostic charge) displayed in the repair summary — reference this when speaking to the customer
 - A green **"Customer Contacted"** button below the item card
@@ -951,7 +956,7 @@ When you open a job with a Totaled item, you'll see:
 **Step 1 — Log the customer contact:**
 
 1. Call or contact the customer about the unfixable item
-2. Open the job and find the Totaled item
+2. Open the job and find the Junk item
 3. Tap **Customer Contacted**
 4. If the customer has additional contacts on file, you'll see a **"Who did you reach?"** picker at the top — select the customer themselves or a specific contact. If there are no contacts, this picker is hidden and you go straight to the outcome.
 5. Select what happened from the list:
@@ -963,7 +968,7 @@ When you open a job with a Totaled item, you'll see:
 6. Optionally add a note with extra details
 7. Tap **Confirm**
 
-The contact gets logged — timestamp, outcome, and which contact you reached all appear in the item's **Repair History** timeline. The item stays in Totaled status. The green Customer Contacted button disappears and a gray **Close** button takes its place.
+The contact gets logged — timestamp, outcome, and which contact you reached all appear in the item's **Repair History** timeline. The item stays in Junk status. The green Customer Contacted button disappears and a gray **Close** button takes its place.
 
 **Step 2 — Close the item when the customer pays or picks up:**
 
@@ -976,20 +981,20 @@ The item moves to Closed and the job drops into the Closed section once every it
 
 **Important:** "Customer Contacted" requires an internet connection. If the app is offline, you'll see an error — try again once you're back online. The Close step works offline.
 
-**Filtering for Totaled items:** The FC Job Board's Status filter now includes **Totaled** alongside Checked In / In Progress / Tested / Complete, so you can quickly pull up everything that's awaiting customer contact or pickup.
+**Filtering for Junk items:** The FC Job Board's Status filter now includes **Junk** alongside Checked In / In Progress / Tested / Complete, so you can quickly pull up everything that's awaiting customer contact or pickup.
 
 [screenshot: Customer Contacted sheet with outcome picker and note field]
 
-#### Marking Items as Totaled (Front Counter)
+#### Marking Items as Junk (Front Counter)
 
-You can mark items as Totaled directly from the Front Counter — you don't have to wait for a tech. This is useful when an item is visibly unfixable at intake (severely bent rod, cracked housing, etc.).
+You can mark items as Junk directly from the Front Counter — you don't have to wait for a tech. This is useful when an item is visibly unfixable at intake (severely bent rod, cracked housing, etc.).
 
 1. Open the job detail
 2. Find the item you want to mark
-3. Tap the **Totaled** button (available on items that are Checked In, In Progress, or Tested)
+3. Tap the **Junk** button (available on items that are Checked In, In Progress, or Tested)
 4. Confirm
 
-The item gets a black TOTALED banner on the job card and enters the "Awaiting Customer" state.
+The item gets a black JUNK banner on the job card and enters the "Awaiting Customer" state.
 
 #### Warranty Check-In
 
@@ -1022,7 +1027,7 @@ Create the work order like normal, then open the job detail view. Near the top y
 
 If it's still a draft, the same Warranty pill shows up on the draft detail view. Flip it on there and it applies when you finalize.
 
-**Post-check-in toggling:** You can toggle the job-level Warranty pill any time after check-in as long as at least one item is still active. This is useful when the customer calls back after drop-off to confirm the job is under warranty, or when you discover the equipment's repair history during inspection. Once every item on the job is **Closed** or **Totaled**, the pill locks — this prevents accidentally flipping warranty on a wrapped-up job and skewing revenue reports. If you need to correct warranty status on a fully-closed job, an admin can still do it by elevating admin access.
+**Post-check-in toggling:** You can toggle the job-level Warranty pill any time after check-in as long as at least one item is still active. This is useful when the customer calls back after drop-off to confirm the job is under warranty, or when you discover the equipment's repair history during inspection. Once every item on the job is **Closed** or **Junk**, the pill locks — this prevents accidentally flipping warranty on a wrapped-up job and skewing revenue reports. If you need to correct warranty status on a fully-closed job, an admin can still do it by elevating admin access.
 
 **What the tech station can't do:** Tech Station devices don't see the job-level Warranty pill — warranty is a Front Counter / Admin concern. Techs can still see the WARRANTY badge on the card and the "Warranty Job" line in the header, but they can't change the status.
 
@@ -1079,7 +1084,7 @@ Below the contacts section, you'll see all of that customer's jobs split into tw
 
 **Active Jobs** — any jobs that are still being worked on, shown as full cards with photos (same cards as the Job Board). If the customer has no active jobs, this section doesn't appear.
 
-**Past Jobs** — closed and totaled jobs shown as compact rows with the job number, equipment summary (e.g., "Cylinder × 2 · Pump × 1"), date range (when it was created and when it was closed), item count, and status dots.
+**Past Jobs** — closed and junked jobs shown as compact rows with the job number, equipment summary (e.g., "Cylinder × 2 · Pump × 1"), date range (when it was created and when it was closed), item count, and status dots.
 
 Tap any job — active or past — to open the full job detail view with all items, photos, notes, and history. Use the back arrow to return to the customer detail.
 
@@ -1374,7 +1379,7 @@ Look for the brown **Mark No Warranty** button in the item action area on items 
 2. A confirmation alert appears: "Remove No Warranty? — This will remove the No Warranty flag. Cost and status are unaffected." Tap **Remove** to confirm.
 3. The flag clears. The item's status, cost, and everything else stay exactly where they were.
 
-**What if the item should be totaled instead?** Use the black **Totaled** button. No Warranty is for items that are getting repaired but won't carry a warranty obligation; Totaled is for items that can't be repaired at all.
+**What if the item should be junked instead?** Use the black **Junk** button. No Warranty is for items that are getting repaired but won't carry a warranty obligation; Junk is for items that can't be repaired at all.
 
 **What the team sees:**
 
@@ -1583,7 +1588,7 @@ The timeline includes:
 - **Test results** — PASSED or FAILED with who tested it and when
 - **Oil samples** — Clean or Dirty, who performed it, when, and any notes
 - **Marked Waiting / Resumed Work** — if the item was flagged as waiting, the timeline shows when it was set (with the reason and notes) and when work resumed. Only the most recent waiting cycle is shown.
-- **Customer Contacted** — on Totaled items, shows the contact outcome and timestamp after the "Customer Contacted" action was submitted
+- **Customer Contacted** — on Junk items, shows the contact outcome and timestamp after the "Customer Contacted" action was submitted
 - **Cost** — total price with parts/labor/tax breakdown if applicable, plus manager approval status
 
 This card only appears when there's something to show — brand-new items that haven't been touched yet won't have it.
@@ -1639,21 +1644,21 @@ For items with $0 cost, the manager approval step is skipped automatically, but 
 If an item is unfixable:
 
 1. Open the item
-2. Tap the **Totaled** button (black in light mode, white in dark mode)
-3. Confirm — the item is now marked Totaled and shows a black TOTALED banner on the job card
+2. Tap the **Junk** button (black in light mode, white in dark mode)
+3. Confirm — the item is now marked Junk and shows a black JUNK banner on the job card
 4. The **Enter Diagnostic Cost** sheet pops up automatically — type the cost of the time and parts you spent diagnosing the item (even if it's $0) and tap **Submit**
 
 If the cost is more than $0, you'll see the manager approval prompt — confirm that the cost was approved and the entry is saved. If the cost is $0, the approval step is skipped automatically (nothing to approve). After submitting, you'll see a brief "Cost Submitted!" confirmation and the app returns you to the repair queue.
 
-**Why we ask for a cost on Totaled items:** Even if the equipment can't be saved, the time spent diagnosing it is real labor that has to be billed. Capturing it the moment you mark the item Totaled means the number gets entered while the work is fresh in your head, instead of getting lost when Front Counter calls the customer hours later.
+**Why we ask for a cost on Junk items:** Even if the equipment can't be saved, the time spent diagnosing it is real labor that has to be billed. Capturing it the moment you mark the item Junk means the number gets entered while the work is fresh in your head, instead of getting lost when Front Counter calls the customer hours later.
 
-**If you need to skip the cost prompt for now:** Tap **Cancel** on the cost sheet (or **No — I'll confirm first** on the manager approval). The item still moves to Totaled status, just without a cost yet. Front Counter will see an **"Add Cost"** button on the item and can record the cost later, or you can come back and tap **"Add Cost"** yourself when you have the number.
+**If you need to skip the cost prompt for now:** Tap **Cancel** on the cost sheet (or **No — I'll confirm first** on the manager approval). The item still moves to Junk status, just without a cost yet. Front Counter will see an **"Add Cost"** button on the item and can record the cost later, or you can come back and tap **"Add Cost"** yourself when you have the number.
 
-The item stays in Totaled status after cost entry (it does NOT move to Complete). The Front Counter handles closing Totaled items through the "Customer Contacted" flow.
+The item stays in Junk status after cost entry (it does NOT move to Complete). The Front Counter handles closing Junk items through the "Customer Contacted" flow.
 
 ### About the Action Buttons
 
-All action buttons on the Tech Station (Grab, Done, Tested, Reassign, Enter Cost, Totaled, Close) are intentionally large. They're designed so techs can tap them quickly without fiddling around, even with dirty or gloved hands. On iPad, the buttons sit side by side in a row. On iPhone (used by admins), the buttons stack vertically and stretch full-width so they're still easy to tap on the smaller screen. After any "walk-away" action (anything where you're done with that item for now), the app shows a brief confirmation and automatically returns you to the repair queue.
+All action buttons on the Tech Station (Grab, Done, Tested, Reassign, Enter Cost, Junk, Close) are intentionally large. They're designed so techs can tap them quickly without fiddling around, even with dirty or gloved hands. On iPad, the buttons sit side by side in a row. On iPhone (used by admins), the buttons stack vertically and stretch full-width so they're still easy to tap on the smaller screen. After any "walk-away" action (anything where you're done with that item for now), the app shows a brief confirmation and automatically returns you to the repair queue.
 
 ### Auto-Return to Queue
 
@@ -2103,7 +2108,7 @@ Rollback only moves the item one step at a time along the linear repair flow:
 **Items that can't be rolled back:**
 
 - **Checked In** items — there's nothing earlier in the flow
-- **Totaled** items — Totaled is a separate workflow, not part of the linear repair flow
+- **Junk** items — Junk is a separate workflow, not part of the linear repair flow
 
 If neither rollback applies, the long-press menu won't appear at all on those items.
 
@@ -2143,7 +2148,7 @@ Sometimes a tech finishes the work and the customer's already been charged, but 
 6. The form opens, **pre-filled with anything the item already has**:
    - **Cost** — required. If the item already has a cost on file, it's seeded in; otherwise the field is blank
    - **Tech** — optional. Pre-fills to whoever tested the item, falling back to whoever was assigned to repair it
-   - **Test Result** — optional (Pass / Fail / Warranty / Totaled / Unknown — or Skip)
+   - **Test Result** — optional (Pass / Fail / Warranty / Junk / Unknown — or Skip)
    - **Notes** — always blank (this is a per-action audit note, not item-level state)
 7. Edit any of the pre-filled fields, fill in cost if it's missing, then tap **Mark Complete**
 
@@ -2161,7 +2166,7 @@ This is distinct from **Retro-Close Work Orders** — that one's for entire jobs
 
 **When the button doesn't appear:**
 
-- Item is already at **Complete**, **Closed**, **Totaled**, or **Admin Retro-Closed** — use **Reopen Item** first if you need to make changes
+- Item is already at **Complete**, **Closed**, **Junk**, or **Admin Retro-Closed** — use **Reopen Item** first if you need to make changes
 - You're not on an admin device and admin elevation isn't active
 - The device has no internet (admin overrides are always online — surface a "needs internet" message if offline)
 
@@ -2538,7 +2543,7 @@ Tap the **scan icon** in the toolbar on the Tech Station queue screen. The camer
 
 No more hunting through the queue for the right item. Scan the cylinder, start working.
 
-**If the scan doesn't find anything:** The sticker hasn't been assigned to any item yet. You can assign it right now from any item's detail view — see "Assigning a Tag After Check-In" below. If the tag was retired, the app will tell you — see "Scanning Old / Retired Tags" below. If the equipment has no active job (closed or totaled), you'll see "No active item found" — creating new jobs is a Front Counter task. If you accidentally scan a shipping label or other non-shop QR code, you'll see **"Not an SR-80 tag"** — the app knows it's not one of ours because shop tags always start with "SR-".
+**If the scan doesn't find anything:** The sticker hasn't been assigned to any item yet. You can assign it right now from any item's detail view — see "Assigning a Tag After Check-In" below. If the tag was retired, the app will tell you — see "Scanning Old / Retired Tags" below. If the equipment has no active job (closed or junked), you'll see "No active item found" — creating new jobs is a Front Counter task. If you accidentally scan a shipping label or other non-shop QR code, you'll see **"Not an SR-80 tag"** — the app knows it's not one of ours because shop tags always start with "SR-".
 
 **If the sticker is too damaged to scan:** Tap **"Enter code manually"** below the viewfinder frame to type the code directly. The code is printed on the sticker label below the QR pattern. If the device has no camera or camera access is denied, manual entry is offered as the primary option.
 
@@ -2639,9 +2644,9 @@ Tap **View Item** to navigate to the item it used to be on — useful for tracki
 
 ---
 
-### Scanning Tags on Closed or Totaled Items
+### Scanning Tags on Closed or Junk Items
 
-If you scan a sticker and the linked item has been closed (picked up) or totaled, the app offers to create a new job for that equipment — see "Scanning from the Job Board" above. The customer and equipment type are pre-filled so you can get straight to intake.
+If you scan a sticker and the linked item has been closed (picked up) or junked, the app offers to create a new job for that equipment — see "Scanning from the Job Board" above. The customer and equipment type are pre-filled so you can get straight to intake.
 
 ---
 
