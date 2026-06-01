@@ -2,7 +2,7 @@
 
 **App:** ShopTracker (SR80)
 **Version:** 1.4 (in development)
-**Last Updated:** 2026-06-01 (WIP)
+**Last Updated:** 2026-06-01
 ---
 
 ## Table of Contents
@@ -10,6 +10,7 @@
 - [Getting Started](#getting-started)
   - [What is ShopTracker?](#what-is-shoptracker)
   - [Device Setup (First Time Only)](#device-setup-first-time-only)
+  - [Personal Phone Setup (BYOD)](#personal-phone-setup-byod)
   - ["Device session needs re-registration" Banner](#device-session-needs-re-registration-banner)
   - [Admin Access on Non-Admin Devices](#admin-access-on-non-admin-devices)
   - [Sidebar Navigation](#sidebar-navigation)
@@ -67,6 +68,7 @@
   - [Role Switcher (Debug Only)](#role-switcher-debug-only)
 - [Admin](#admin)
   - [Employee Management](#employee-management)
+  - [Issuing Personal Device Enrollment Codes](#issuing-personal-device-enrollment-codes)
   - [Shop Settings](#shop-settings)
     - [Category Labels](#category-labels)
   - [Manage Lists](#manage-lists)
@@ -123,6 +125,13 @@ There are three types of devices in the shop:
 
 When you open ShopTracker on a brand new device (or after a reset), you'll go through a one-time setup to tell the app who this device is and what it's for. Once set up, the device remembers its identity even if the app is closed or updated.
 
+The first screen — **Set Up This Device** — asks whether this is a **Shop iPad** or **My Personal Phone**:
+
+- **Shop iPad** — the iPad belongs to the shop (front counter, tech station, or admin iPad). Setup is gated by an admin PIN, and you pick a role for it. The rest of this section walks through that path.
+- **My Personal Phone** — you're an employee installing the app on your own iPhone or iPad. Setup is gated by a 6-digit enrollment code that an admin generates for you. See [Personal Phone Setup (BYOD)](#personal-phone-setup-byod) for that flow.
+
+If you tapped Shop iPad, continue with Step 1 below.
+
 #### Step 1: Admin PIN
 
 The very first screen asks for an admin PIN.
@@ -162,6 +171,42 @@ After your PIN is accepted, you'll see the device configuration screen.
 That's it! The device is now set up and will go straight to the correct view every time you open the app. You won't see this setup screen again unless an admin resets the device.
 
 **What about app updates and reinstalls?** The device identity (name + role) is saved in iOS Keychain, which survives both app updates and uninstall/reinstall cycles. So if you update via TestFlight or the App Store — or if you delete and reinstall the app — you'll go straight to the main screen, not back to this setup wizard. The only way to land on this screen again is if an admin uses **Admin → Reset Device** to deliberately clear identity.
+
+---
+
+### Personal Phone Setup (BYOD)
+
+Staff can install ShopTracker on their own iPhone or iPad. Setup uses a 6-digit enrollment code instead of an admin PIN — you don't need to know the admin PIN, and the phone is bound to you as an employee. If you ever leave the shop or get deactivated, your phone signs out automatically.
+
+**Before you start**, get an enrollment code from an admin. They generate it in the app and read it to you (or text/AirDrop it). Codes are good for **15 minutes** and can only be used once.
+
+#### Setup Steps
+
+1. Install the app and open it.
+2. On the **Set Up This Device** screen, tap **My Personal Phone**.
+3. **Enrollment Code** — type the 6-digit code the admin gave you. Tap **Continue**.
+4. **Pick Your Role** — what kind of work do you do on this phone?
+   - **Front Counter** — check-in, job board, customers
+   - **Tech Station** — repair queue, checklists, testing
+   - **Admin** — full access to everything
+   Tap **Continue**.
+5. **Name Your Phone** — defaults to your device's name ("Bec's iPhone"), feel free to keep it or change it. This is what shows up in the admin's Devices list.
+6. Tap **Finish Setup**.
+7. **Face ID / Touch ID / device passcode** — confirm it's you. After this, the app opens to your assigned role's main view.
+
+#### What's Different on a Personal Phone
+
+A personal phone behaves like its assigned role (a personal Tech Station looks just like the shop Tech Station iPad) but with a few extra protections layered on:
+
+- **Face ID / Touch ID gate.** The app asks for biometric (or your device passcode as a fallback) on cold launch, and again whenever the app has been backgrounded for more than **3 hours**. Brief context-switches — checking a notification, copying a phone number, looking up a parts diagram in another app — don't re-prompt.
+- **Active employee = active access.** If an admin deactivates your employee record, your phone signs out within a couple of minutes (usually within seconds if you're online). You'll need a fresh enrollment code to set it up again.
+- **Offline limit.** Your phone can stay offline (airplane mode, no signal, dead Wi-Fi) for up to **3 days** by default before it auto-signs-out. Admins can bump this longer before a hurricane or other extended outage.
+- **Local wipe on revoke.** If an admin revokes your phone, the cached customer data and photos on your phone are wiped automatically. Nothing customer-related is left behind.
+- **One personal device per employee.** When you set up a new phone (e.g. upgrading to a new iPhone), your previous personal device is automatically signed out as soon as the new one finishes setup. You don't have to ask the admin to revoke the old one first — just get a fresh code and set up the new phone.
+
+#### "Reconnect to verify access" Banner
+
+If your phone has been offline for a while (more than a day), you'll see an amber banner at the top of the screen warning that it hasn't been able to verify with the server. As soon as you're back online, the banner clears on its own (usually within 5 minutes). If you stay offline past the limit, the app will sign you out and you'll need a fresh enrollment code from an admin.
 
 ---
 
@@ -1774,9 +1819,49 @@ If someone leaves the shop or no longer needs access:
 
 The employee disappears from all pickers (they won't show up when assigning techs or testers) but their name still appears on any jobs, tests, or repairs they were involved in. Nothing is deleted — history stays intact.
 
+**If the employee had a personal phone enrolled** (see [Personal Phone Setup](#personal-phone-setup-byod)), it's automatically revoked the moment you deactivate them. Their phone signs out within a few seconds if it's online, or within 5 minutes once it comes back online. Their local cached photos and customer data are wiped at the same time. No follow-up action needed on your end.
+
 #### Reactivating an Employee
 
 If someone comes back or was deactivated by mistake, scroll down to the **Inactive** section and tap the **Reactivate** button next to their name. They'll immediately reappear in all pickers.
+
+**Reactivating doesn't restore their phone.** If they had a personal phone before being deactivated, it was revoked when they were deactivated, and reactivating their employee record doesn't bring it back. They'll need a fresh enrollment code to set up the phone again.
+
+---
+
+### Issuing Personal Device Enrollment Codes
+
+When an employee wants to install ShopTracker on their own iPhone or iPad, you issue them a one-time enrollment code from the Employees screen. The employee uses that code to set up their phone — they never need to know the admin PIN.
+
+**Issuing a code:**
+
+1. Open **Admin → Employees**.
+2. Swipe left on the employee's row.
+3. Tap **Enroll Device** (the blue-tinted swipe button next to Deactivate and Reset PIN).
+4. Enter your admin PIN.
+5. A 6-digit code appears with a live countdown to expiry (15 minutes). You can:
+   - Read it to the employee directly
+   - Tap **Copy** to copy it to the clipboard and send it via Messages / AirDrop / however
+   - Hand them your iPad so they can see it
+6. Tap **Done** when you're finished.
+
+**What happens next:** the employee enters that code in their phone's setup flow, picks a role, names the phone, and authorizes with Face ID. The phone shows up in the admin **Devices** list with an orange "Personal" pill next to its role badge.
+
+#### How Codes Behave
+
+- **15-minute expiry.** After that, the code is dead — issue a new one if the employee didn't get to it in time.
+- **Single use.** Once redeemed, the code can't be reused. The admin's audit log records who issued it and who redeemed it.
+- **Issuing doesn't revoke anything.** If the employee already has a personal phone, generating a new code doesn't disrupt the existing phone. The old phone only gets signed out the moment the new code is actually **redeemed** on the new device. So feel free to generate codes proactively — until someone uses one, the world doesn't change.
+- **One personal device per employee at a time.** When a new code is redeemed, any previously enrolled personal phone for that same employee is automatically revoked and wiped. This is how phone upgrades work — issue a code, employee sets up the new phone, old phone signs out on its own within a few seconds.
+
+#### Viewing & Revoking Personal Devices
+
+Personal devices appear in **Admin → Devices** alongside the shop iPads. You can tell them apart at a glance:
+
+- **Orange "Personal" pill** next to the role badge marks a personal device
+- The employee's name appears under the device name
+
+To revoke a personal device — for example if someone misplaces their phone — swipe left on the device row in the Devices list and tap **Revoke**. The phone signs out within a few seconds and its local cache (photos, customer data) is wiped. The employee stays active; only that one device is killed.
 
 ### Shop Settings
 
@@ -1923,6 +2008,16 @@ The current role is shown on the row itself so you can tell at a glance what eac
 **Why this exists:** Without registration, the iPad can authenticate but the server doesn't know which physical role it represents. Customer search, deletions, and other protected operations check the server-side role on every request — an unregistered iPad will see empty searches or get rejected on writes. The "Register Device Identity" step is what bridges the local device setup to the server's permission system.
 
 **If an iPad stops loading customer data**, the most likely cause is that it hasn't been registered (or the registration was lost — usually because the device was reset). Walk over to the iPad, run through the registration flow, and it'll start working again.
+
+#### Personal Devices — Offline Grace Window
+
+Below the registration row, Shop Settings has a **Personal Devices** section with one control: the **Offline grace window**. This sets how long a personal phone (BYOD) can stay offline before it auto-signs-out.
+
+- **Default:** 3 days. Covers a normal weekend without service, a flight, or a typical PTO stretch.
+- **Tunable range:** 24 hours to 14 days, in 12-hour increments.
+- **Hurricane prep:** before a tropical system or any other anticipated extended outage, bump this to a week or more. After things settle, dial it back to the default.
+
+Shop iPads (Front Counter, Tech Station, Admin) are not affected by this setting. It only applies to personal devices enrolled via the BYOD flow.
 
 ### Manage Lists
 
