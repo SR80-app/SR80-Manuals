@@ -1229,14 +1229,18 @@ Multiple customers (people) can belong to the same company. When a company is se
 
 You can set a per-company admin fee that gets added to jobs for that company's customers. This is useful for companies that have a standing service charge or markup arrangement.
 
-**Setting an admin fee:** Open the company detail screen, tap the **...** menu, and choose **Admin Fee**. Enter the fee amount and choose the fee type:
+**Where to find it:** Admin fees live on the **company** (not the customer). Open the company detail screen — if your device is in the admin role, you'll see an **Admin Fee** row inside the company info card (between Tax Exempt and Notes, with a 🔒 shield icon). You can also reach it from the **...** menu in the top right → **Admin Fee**. Both paths open the same editor.
+
+**Setting an admin fee:** Tap the Admin Fee row (or menu item). Enter the fee amount and choose the fee type:
 
 - **Per Job** — one flat fee added per work order, regardless of how many items are on it
 - **Per Item** — the fee is added for each item on the work order
 
-The admin fee shows up on the company detail screen below the company info. It's factored into cost calculations automatically when jobs are created for customers under that company.
+Once set, the fee displays in the row (`$25.00 · Per Job`) and is factored into cost calculations automatically when jobs are created for customers under that company.
 
-**Changing or removing the fee:** Same path — **...** → **Admin Fee**. Set the amount to zero to effectively remove it, or update the amount and type as needed.
+**Changing or removing the fee:** Same paths — tap the row, or **...** → **Admin Fee**. Set the amount to zero to effectively remove it, or update the amount and type as needed.
+
+**Why you might not see it:** The Admin Fee row only renders on devices in the admin role (or after an admin PIN unlock on non-admin devices). If you're admin and the row is missing, you're probably looking at a customer detail screen — admin fees are on the *parent company*, not the individual customer.
 
 Admin fees are preserved during CSV imports — if a company already has an admin fee set and you re-import data, the existing fee won't be overwritten.
 
