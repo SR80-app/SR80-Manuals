@@ -689,6 +689,11 @@
 				let markdown = await response.text();
 				markdown = stripInlineTOC(markdown);
 
+				// Prevent setext-style H2: a line of text followed immediately by ---
+				// renders as <h2> instead of <p> + <hr>. Insert a blank line before
+				// any --- that directly follows a text line so it becomes a real <hr>.
+				markdown = markdown.replace(/([^\n])\n(---\s*)$/gm, '$1\n\n$2');
+
 				marked.setOptions({ gfm: true, breaks: false, headerIds: false, mangle: false });
 				const html = marked.parse(markdown);
 				const content = document.getElementById('content');
@@ -747,7 +752,9 @@
 		function wrapContentSections(root) {
 			// Get only DIRECT-child H2s (not nested inside blockquotes etc.)
 			// Avoids :scope pseudo-class which can be flaky in some contexts
-			const h2s = Array.from(root.querySelectorAll('h2')).filter(h => h.parentElement === root);
+			const h2s = Array.from(root.querySelectorAll('h2')).filter(h =>
+				h.parentElement === root && SECTION_ROLES.hasOwnProperty(h.id)
+			);
 			console.log('[Manual] Wrapping', h2s.length, 'sections');
 
 			h2s.forEach(h2 => {
@@ -880,7 +887,9 @@
 			const toc = document.getElementById('toc');
 			toc.innerHTML = '';
 
-			const h2s = root.querySelectorAll('h2');
+			const h2s = Array.from(root.querySelectorAll('h2')).filter(h =>
+				SECTION_ROLES.hasOwnProperty(h.id)
+			);
 			h2s.forEach(h2 => {
 				const groupLi = document.createElement('li');
 				groupLi.className = 'toc-group';
