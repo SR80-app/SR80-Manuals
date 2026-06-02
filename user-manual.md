@@ -113,12 +113,12 @@
 
 ### What is ShopTracker?
 
-ShopTracker is the repair tracking app for Hydraulics SR-80. It runs on iPads in the shop and replaces the paper-and-whiteboard system. Jobs come in at the front counter, get worked on in the back, and ShopTracker keeps everyone on the same page in real time.
+ShopTracker is the repair tracking app for Hydraulics SR-80. It runs on s in the shop and replaces the paper-and-whiteboard system. Jobs come in at the front counter, get worked on in the back, and ShopTracker keeps everyone on the same page in real time.
 
-There are three types of devices in the shop:
+There are three types of device settings in the shop:
 
 - **Front Counter** — where the front counter staff checks equipment in, creates jobs, and handles customer pickup
-- **Tech Station** — the iPad in the back shop where techs see their repair queue, log what they've done, and mark items as ready for testing
+- **Tech Station** — the iPad/tech iPhones in the back shop where techs see their repair queue, log what they've done, and mark items as ready for testing
 - **Admin** — Bec, Jamie, or Lee's device with full access to everything: both views, settings, reports, and employee management
 
 ### Device Setup (First Time Only)
@@ -127,7 +127,7 @@ When you open ShopTracker on a brand new device (or after a reset), you'll go th
 
 The first screen — **Set Up This Device** — asks whether this is a **Shop iPad** or **My Personal Phone**:
 
-- **Shop iPad** — the iPad belongs to the shop (front counter, tech station, or admin iPad). Setup is gated by an admin PIN, and you pick a role for it. The rest of this section walks through that path.
+- **Shop iPad** — the iPads belongs to the shop (front counter, tech station, or admin iPad). Setup is gated by an admin PIN, and you pick a role for it. The rest of this section walks through that path.
 - **My Personal Phone** — you're an employee installing the app on your own iPhone or iPad. Setup is gated by a 6-digit enrollment code that an admin generates for you. See [Personal Phone Setup (BYOD)](#personal-phone-setup-byod) for that flow.
 
 If you tapped Shop iPad, continue with Step 1 below.
