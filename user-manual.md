@@ -78,6 +78,7 @@
   - [Rolling Back an Item's Status (Admin Only)](#rolling-back-an-items-status-admin-only)
   - [Editing Cost on a Complete Item](#editing-cost-on-a-complete-item)
   - [Force-Completing an Item (Admin Only)](#force-completing-an-item-admin-only)
+  - [Deleting an Item from a Finalized Job (Admin Only)](#deleting-an-item-from-a-finalized-job-admin-only)
   - [Retro-Closing Open Work Orders (Admin Only)](#retro-closing-open-work-orders-admin-only)
   - [Deleting a Job (Admin Only)](#deleting-a-job-admin-only)
   - [Reports](#reports)
@@ -2272,6 +2273,33 @@ This is distinct from **Retro-Close Work Orders** — that one's for entire jobs
 - Item is already at **Complete**, **Closed**, **Junk**, or **Admin Retro-Closed** — use **Reopen Item** first if you need to make changes
 - You're not on an admin device and admin elevation isn't active
 - The device has no internet (admin overrides are always online — surface a "needs internet" message if offline)
+
+### Deleting an Item from a Finalized Job (Admin Only)
+
+Sometimes a job gets finalized with an extra item — usually a double-tap during intake produced a duplicate, or someone added the wrong thing and didn't catch it until after check-in. The standard **Remove Item** button only works on drafts; once a job is finalized, that button is gone. An admin can delete a single bad item from a finalized job without nuking the whole job.
+
+**How to use it:**
+
+1. Open the job from the Job Board (with admin unlocked — the orange "Admin Unlocked" banner should be visible at the top of the screen)
+2. Find the item you want to delete
+3. **Long-press the item card** (~0.5 second hold). The most reliable place to long-press is the equipment-detail text in the middle of the card (Equipment Type / Machine Type / Brand / Color / Description rows) — not on a photo, button, or the collapse toggle, those swallow the long-press
+4. A context menu appears with **Delete Item (Admin)** in red with a trash icon
+5. Tap it → the admin PIN prompt appears with a summary of exactly what's about to die. Example: *"This will permanently delete 20260602-19-2 (3 photos, 1 service reason). This cannot be undone."*
+6. Enter your PIN and tap **Delete Item**
+
+The item is permanently removed, along with every photo, video, note, service reason, test, oil sample, and tech-history entry attached to it. The job itself stays put — only the one item is deleted.
+
+**This is permanent and there is no undo.** The PIN sheet's summary is your last chance to bail — if the count of attached photos / videos / tests looks higher than you expected, that's a sign you may be about to delete an item that's been worked on. Tap Cancel and double-check.
+
+**When the context menu doesn't appear:**
+
+- You're not on an admin device and admin elevation isn't active — unlock admin first (sidebar → Admin Settings → Unlock Admin, or the unlock pill in the toolbar). The orange "Admin Unlocked" banner has to be at the top of the screen
+- The job is a draft — use the existing inline **Remove Item** button under the item row instead
+- You long-pressed on a tappable element (a photo, the collapse toggle, an action button) — try the equipment-detail text area in the middle of the card
+
+**What if the item has unique photos or notes I want to keep?**
+
+The delete cascades — photos, notes, tests, and tech history go with the item. If the item has unique photos that should be preserved on a different item, copy them manually first (no in-app re-parent flow). For the typical case (a double-tap during intake where both items show the same equipment), the attached data is duplicates of the kept item's data anyway and the cascade is exactly what you want.
 
 ### Retro-Closing Open Work Orders (Admin Only)
 
