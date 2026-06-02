@@ -18,7 +18,7 @@
 			--accent: #c9a227;
 			--accent-bg: #fff6d6;
 			--link: #1466c9;
-			--code-bg: #f1ede3; 
+			--code-bg: #f1ede3;
 			--sidebar-width: 300px;
 			--header-height: 64px;
 			--breadcrumb-height: 36px;
@@ -661,6 +661,7 @@
 		let activeRole = localStorage.getItem('sr80-manual-role') || 'all';
 		let currentH2Id = '';
 		let currentH3Id = '';
+		let suppressScrollSpy = false; // prevent scroll spy during smooth-scroll animations
 
 		// ============================================================
 		// SLUG GENERATOR (GitHub-compatible)
@@ -700,13 +701,14 @@
 				// Wrap H2 sections for collapsibility (after TOC + index built)
 				wrapContentSections(content);
 
-				setupRoleFilter();
-				setupScrollSpy(content);
-				setupSearch();
-				setupBreadcrumb();
-				setupBackToTop();
-				setupCollapsibleSections();
-				handleInitialHash();
+				// Each feature is independent — one failure shouldn't break the rest
+				try { setupRoleFilter(); } catch(e) { console.error('Role filter setup failed:', e); }
+				try { setupScrollSpy(content); } catch(e) { console.error('Scroll spy setup failed:', e); }
+				try { setupSearch(); } catch(e) { console.error('Search setup failed:', e); }
+				try { setupBreadcrumb(); } catch(e) { console.error('Breadcrumb setup failed:', e); }
+				try { setupBackToTop(); } catch(e) { console.error('Back-to-top setup failed:', e); }
+				try { setupCollapsibleSections(); } catch(e) { console.error('Collapsible sections setup failed:', e); }
+				try { handleInitialHash(); } catch(e) { console.error('Hash handling failed:', e); }
 			} catch (err) {
 				console.error(err);
 				document.getElementById('content').innerHTML =
@@ -743,7 +745,10 @@
 		// ============================================================
 
 		function wrapContentSections(root) {
-			const h2s = Array.from(root.querySelectorAll(':scope > h2'));
+			// Get only DIRECT-child H2s (not nested inside blockquotes etc.)
+			// Avoids :scope pseudo-class which can be flaky in some contexts
+			const h2s = Array.from(root.querySelectorAll('h2')).filter(h => h.parentElement === root);
+			console.log('[Manual] Wrapping', h2s.length, 'sections');
 
 			h2s.forEach(h2 => {
 				const section = document.createElement('section');
@@ -890,8 +895,15 @@
 
 				header.addEventListener('click', () => {
 					const hasSubs = groupLi.querySelector('.toc-sub li');
+					const wasExpanded = groupLi.classList.contains('expanded');
+
 					if (hasSubs) groupLi.classList.toggle('expanded');
-					navigateTo(h2.id);
+
+					// Only scroll to the section when EXPANDING, not collapsing.
+					// Otherwise navigateTo re-expands the group we just collapsed.
+					if (!wasExpanded || !hasSubs) {
+						navigateTo(h2.id);
+					}
 				});
 
 				groupLi.appendChild(header);
@@ -932,7 +944,12 @@
 			const section = el.closest('.content-section');
 			if (section) expandSection(section);
 
+			// Suppress scroll spy during the smooth-scroll animation so
+			// intermediate headers don't trigger TOC group expansion
+			suppressScrollSpy = true;
 			el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			setTimeout(() => { suppressScrollSpy = false; }, 600);
+
 			history.replaceState(null, '', '#' + id);
 			expandGroupContaining(id);
 
@@ -974,6 +991,7 @@
 			if (!headers.length) return;
 
 			const observer = new IntersectionObserver((entries) => {
+				if (suppressScrollSpy) return;
 				entries.forEach(entry => {
 					if (entry.isIntersecting) {
 						setActive(entry.target.id);
@@ -1000,13 +1018,15 @@
 			for (const g of groups) {
 				if (g.dataset.targetId === id) {
 					g.querySelector('.toc-group-header').classList.add('active');
-					g.classList.add('expanded');
+					// Only auto-expand if user hasn't manually collapsed this group
+					// (expand by default, but navigateTo and toggle manage explicit state)
 					break;
 				}
 				const sub = g.querySelector('.toc-sub a[href="#' + CSS.escape(id) + '"]');
 				if (sub) {
 					sub.classList.add('active');
 					g.querySelector('.toc-group-header').classList.add('active');
+					// Auto-expand parent group so the active sub-item is visible
 					g.classList.add('expanded');
 					break;
 				}
