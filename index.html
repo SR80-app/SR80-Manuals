@@ -1,1004 +1,1384 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShopTracker User Manual</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
-    <style>
-        :root {
-            --bg: #fbfaf6;
-            --bg-sidebar: #f4f1ea;
-            --bg-elevated: #ffffff;
-            --border: #e6e1d4;
-            --border-strong: #d8d2c1;
-            --text: #1d1d1f;
-            --text-muted: #6b6b70;
-            --text-faint: #9a9a9f;
-            --accent: #c9a227;        /* warm Notes-yellow accent */
-            --accent-bg: #fff6d6;
-            --link: #1466c9;
-            --code-bg: #f1ede3;
-            --sidebar-width: 300px;
-            --header-height: 64px;
-        }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ShopTracker User Manual</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+	<style>
+		:root {
+			--bg: #fbfaf6;
+			--bg-sidebar: #f4f1ea;
+			--bg-elevated: #ffffff;
+			--border: #e6e1d4;
+			--border-strong: #d8d2c1;
+			--text: #1d1d1f;
+			--text-muted: #6b6b70;
+			--text-faint: #9a9a9f;
+			--accent: #c9a227;
+			--accent-bg: #fff6d6;
+			--link: #1466c9;
+			--code-bg: #f1ede3; 
+			--sidebar-width: 300px;
+			--header-height: 64px;
+			--breadcrumb-height: 36px;
+		}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+		* { margin: 0; padding: 0; box-sizing: border-box; }
+		html { scroll-behavior: smooth; }
 
-        html { scroll-behavior: smooth; }
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+			font-size: 16px;
+			line-height: 1.65;
+			color: var(--text);
+			background: var(--bg);
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-            font-size: 16px;
-            line-height: 1.65;
-            color: var(--text);
-            background: var(--bg);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+		/* ========== Top Bar ========== */
+		.topbar {
+			position: fixed;
+			top: 0; left: 0; right: 0;
+			height: var(--header-height);
+			background: var(--bg);
+			border-bottom: 1px solid var(--border);
+			display: flex;
+			align-items: center;
+			padding: 0 1.25rem;
+			z-index: 20;
+		}
+		.topbar .brand { display: flex; flex-direction: column; justify-content: center; }
+		.topbar .brand-title { font-size: 1.05rem; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+		.topbar .brand-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 1px; }
+		.topbar .menu-btn {
+			display: none;
+			background: none;
+			border: 1px solid var(--border-strong);
+			color: var(--text);
+			border-radius: 8px;
+			padding: 0.45rem 0.65rem;
+			cursor: pointer;
+			margin-right: 0.75rem;
+			font-size: 1rem;
+			line-height: 1;
+		}
+		.topbar .menu-btn:hover { background: var(--bg-sidebar); }
 
-        /* ---------- Top Bar ---------- */
-        .topbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--header-height);
-            background: var(--bg);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            padding: 0 1.25rem;
-            z-index: 20;
-        }
-        .topbar .brand {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .topbar .brand-title {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--text);
-            letter-spacing: -0.01em;
-        }
-        .topbar .brand-sub {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 1px;
-        }
-        .topbar .menu-btn {
-            display: none;
-            background: none;
-            border: 1px solid var(--border-strong);
-            color: var(--text);
-            border-radius: 8px;
-            padding: 0.45rem 0.65rem;
-            cursor: pointer;
-            margin-right: 0.75rem;
-            font-size: 1rem;
-            line-height: 1;
-        }
-        .topbar .menu-btn:hover { background: var(--bg-sidebar); }
+		/* ========== Breadcrumb Bar ========== */
+		.breadcrumb-bar {
+			position: fixed;
+			top: var(--header-height);
+			left: var(--sidebar-width);
+			right: 0;
+			height: var(--breadcrumb-height);
+			background: var(--bg-elevated);
+			border-bottom: 1px solid var(--border);
+			display: flex;
+			align-items: center;
+			padding: 0 2.5rem;
+			z-index: 19;
+			font-size: 0.8rem;
+			color: var(--text-muted);
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+		.breadcrumb-bar a {
+			color: var(--text-muted);
+			text-decoration: none;
+			transition: color 0.1s;
+		}
+		.breadcrumb-bar a:hover { color: var(--text); }
+		.breadcrumb-bar .bc-sep {
+			margin: 0 0.4rem;
+			color: var(--text-faint);
+			font-weight: 300;
+		}
+		.breadcrumb-bar .bc-current { color: var(--text); font-weight: 500; }
+		.breadcrumb-bar .bc-role {
+			display: inline-block;
+			font-size: 0.7rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.04em;
+			padding: 1px 6px;
+			border-radius: 4px;
+			margin-right: 0.6rem;
+		}
+		.bc-role[data-role="fc"] { background: #dbeafe; color: #1e40af; }
+		.bc-role[data-role="tech"] { background: #d1fae5; color: #065f46; }
+		.bc-role[data-role="admin"] { background: #ede9fe; color: #5b21b6; }
 
-        /* ---------- Layout ---------- */
-        .layout {
-            display: flex;
-            padding-top: var(--header-height);
-            min-height: 100vh;
-        }
+		/* ========== Layout ========== */
+		.layout {
+			display: flex;
+			padding-top: calc(var(--header-height) + var(--breadcrumb-height));
+			min-height: 100vh;
+		}
 
-        /* ---------- Sidebar ---------- */
-        .sidebar {
-            width: var(--sidebar-width);
-            flex-shrink: 0;
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border);
-            position: fixed;
-            top: var(--header-height);
-            bottom: 0;
-            left: 0;
-            overflow-y: auto;
-            padding: 1rem 0.5rem 2rem;
-        }
-        .sidebar::-webkit-scrollbar { width: 8px; }
-        .sidebar::-webkit-scrollbar-thumb {
-            background: var(--border-strong);
-            border-radius: 4px;
-        }
-        .sidebar::-webkit-scrollbar-track { background: transparent; }
+		/* ========== Sidebar ========== */
+		.sidebar {
+			width: var(--sidebar-width);
+			flex-shrink: 0;
+			background: var(--bg-sidebar);
+			border-right: 1px solid var(--border);
+			position: fixed;
+			top: var(--header-height);
+			bottom: 0;
+			left: 0;
+			overflow-y: auto;
+			padding: 0.75rem 0.5rem 2rem;
+		}
+		.sidebar::-webkit-scrollbar { width: 8px; }
+		.sidebar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+		.sidebar::-webkit-scrollbar-track { background: transparent; }
 
-        .sidebar-title {
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--text-faint);
-            padding: 0.5rem 1rem 0.75rem;
-        }
+		.sidebar-title {
+			font-size: 0.7rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+			color: var(--text-faint);
+			padding: 0.5rem 1rem 0.75rem;
+		}
 
-        /* ---------- Search ---------- */
-        .search-wrap {
-            padding: 0.25rem 0.75rem 0.75rem;
-            position: relative;
-        }
-        .search-input {
-            width: 100%;
-            padding: 0.55rem 2rem 0.55rem 2rem;
-            font: inherit;
-            font-size: 0.88rem;
-            color: var(--text);
-            background: var(--bg-elevated);
-            border: 1px solid var(--border-strong);
-            border-radius: 8px;
-            outline: none;
-            transition: border-color 0.12s ease, box-shadow 0.12s ease;
-        }
-        .search-input::placeholder { color: var(--text-faint); }
-        .search-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.18);
-        }
-        .search-icon {
-            position: absolute;
-            left: 1.35rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-faint);
-            pointer-events: none;
-            font-size: 0.9rem;
-        }
-        .search-clear {
-            position: absolute;
-            right: 1.1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text-faint);
-            cursor: pointer;
-            font-size: 1rem;
-            padding: 0.1rem 0.3rem;
-            border-radius: 4px;
-            display: none;
-            line-height: 1;
-        }
-        .search-clear:hover { color: var(--text); background: rgba(0,0,0,0.05); }
-        .search-wrap.has-value .search-clear { display: block; }
+		/* ========== Role Pills ========== */
+		.role-pills {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.35rem;
+			padding: 0.25rem 0.75rem 0.65rem;
+		}
+		.role-pill {
+			font: inherit;
+			font-size: 0.78rem;
+			font-weight: 500;
+			padding: 0.3rem 0.7rem;
+			border-radius: 20px;
+			border: 1px solid var(--border-strong);
+			background: var(--bg-elevated);
+			color: var(--text-muted);
+			cursor: pointer;
+			transition: all 0.12s ease;
+			line-height: 1;
+			white-space: nowrap;
+		}
+		.role-pill:hover { background: var(--bg-sidebar); color: var(--text); }
+		.role-pill.active {
+			background: var(--accent);
+			color: #fff;
+			border-color: var(--accent);
+			font-weight: 600;
+		}
+		.role-pill.active:hover { background: #b8921f; }
 
-        .search-hint {
-            position: absolute;
-            right: 1.1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.7rem;
-            color: var(--text-faint);
-            background: var(--bg-sidebar);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 1px 5px;
-            pointer-events: none;
-        }
-        .search-wrap.has-value .search-hint { display: none; }
+		/* ========== Search ========== */
+		.search-wrap {
+			padding: 0.25rem 0.75rem 0.75rem;
+			position: relative;
+		}
+		.search-input {
+			width: 100%;
+			padding: 0.55rem 2rem 0.55rem 2rem;
+			font: inherit;
+			font-size: 0.88rem;
+			color: var(--text);
+			background: var(--bg-elevated);
+			border: 1px solid var(--border-strong);
+			border-radius: 8px;
+			outline: none;
+			transition: border-color 0.12s ease, box-shadow 0.12s ease;
+		}
+		.search-input::placeholder { color: var(--text-faint); }
+		.search-input:focus {
+			border-color: var(--accent);
+			box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.18);
+		}
+		.search-icon {
+			position: absolute;
+			left: 1.35rem; top: 50%;
+			transform: translateY(-50%);
+			color: var(--text-faint);
+			pointer-events: none;
+			font-size: 0.9rem;
+		}
+		.search-clear {
+			position: absolute;
+			right: 1.1rem; top: 50%;
+			transform: translateY(-50%);
+			background: none; border: none;
+			color: var(--text-faint);
+			cursor: pointer;
+			font-size: 1rem;
+			padding: 0.1rem 0.3rem;
+			border-radius: 4px;
+			display: none;
+			line-height: 1;
+		}
+		.search-clear:hover { color: var(--text); background: rgba(0,0,0,0.05); }
+		.search-wrap.has-value .search-clear { display: block; }
+		.search-hint {
+			position: absolute;
+			right: 1.1rem; top: 50%;
+			transform: translateY(-50%);
+			font-size: 0.7rem;
+			color: var(--text-faint);
+			background: var(--bg-sidebar);
+			border: 1px solid var(--border);
+			border-radius: 4px;
+			padding: 1px 5px;
+			pointer-events: none;
+		}
+		.search-wrap.has-value .search-hint { display: none; }
+		.toc-highlight {
+			background: var(--accent-bg);
+			color: #5a4500;
+			border-radius: 2px;
+			padding: 0 1px;
+		}
+		.no-results {
+			padding: 1rem;
+			color: var(--text-faint);
+			font-size: 0.85rem;
+			text-align: center;
+			display: none;
+		}
+		.no-results.visible { display: block; }
 
-        .toc-highlight {
-            background: var(--accent-bg);
-            color: #5a4500;
-            border-radius: 2px;
-            padding: 0 1px;
-        }
+		.toc-snippet {
+			display: block;
+			font-size: 0.78rem;
+			line-height: 1.4;
+			color: var(--text-faint);
+			padding: 0.15rem 0.75rem 0.35rem 1.75rem;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.toc-snippet .toc-highlight { font-weight: 600; }
+		.toc-group-header .toc-snippet-inline {
+			display: block;
+			font-size: 0.76rem;
+			font-weight: 400;
+			color: var(--text-faint);
+			line-height: 1.35;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			margin-top: 1px;
+		}
+		.toc-group-header .toc-snippet-inline .toc-highlight { font-weight: 600; }
 
-        .no-results {
-            padding: 1rem 1rem;
-            color: var(--text-faint);
-            font-size: 0.85rem;
-            text-align: center;
-            display: none;
-        }
-        .no-results.visible { display: block; }
+		.toc.filtering .toc-group:not(.has-match) { display: none; }
+		.toc.filtering .toc-sub li:not(.match) { display: none; }
+		.toc.filtering .toc-group.has-match .toc-sub { max-height: 2000px; }
+		.toc.filtering .toc-group-header .toc-caret { visibility: hidden; }
 
-        /* Full-text search context snippets */
-        .toc-snippet {
-            display: block;
-            font-size: 0.78rem;
-            line-height: 1.4;
-            color: var(--text-faint);
-            padding: 0.15rem 0.75rem 0.35rem 1.75rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .toc-snippet .toc-highlight {
-            font-weight: 600;
-        }
-        .toc-group-header .toc-snippet-inline {
-            display: block;
-            font-size: 0.76rem;
-            font-weight: 400;
-            color: var(--text-faint);
-            line-height: 1.35;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            margin-top: 1px;
-        }
-        .toc-group-header .toc-snippet-inline .toc-highlight {
-            font-weight: 600;
-        }
+		.toc { list-style: none; }
+		.toc-group { margin-bottom: 0.15rem; }
+		.toc-group.role-hidden { display: none; }
 
-        /* When filtering, hide non-matching items */
-        .toc.filtering .toc-group:not(.has-match) { display: none; }
-        .toc.filtering .toc-sub li:not(.match) { display: none; }
-        .toc.filtering .toc-group.has-match { }
-        .toc.filtering .toc-group.has-match .toc-sub { max-height: 2000px; }
-        .toc.filtering .toc-group-header .toc-caret { visibility: hidden; }
+		.toc-group-header {
+			display: flex;
+			align-items: center;
+			gap: 0.45rem;
+			padding: 0.45rem 0.75rem;
+			border-radius: 7px;
+			cursor: pointer;
+			color: var(--text);
+			font-size: 0.92rem;
+			font-weight: 600;
+			user-select: none;
+			transition: background 0.12s ease;
+		}
+		.toc-group-header:hover { background: rgba(0,0,0,0.04); }
+		.toc-group-header.active {
+			background: var(--accent-bg);
+			color: #6e5400;
+		}
+		.toc-caret {
+			display: inline-block;
+			font-size: 0.7rem;
+			color: var(--text-faint);
+			transition: transform 0.18s ease;
+			width: 0.75rem;
+			text-align: center;
+			flex-shrink: 0;
+		}
+		.toc-group.expanded .toc-caret { transform: rotate(90deg); }
+		.toc-group-label {
+			flex: 1;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.toc-sub {
+			list-style: none;
+			max-height: 0;
+			overflow: hidden;
+			transition: max-height 0.22s ease;
+			padding-left: 0.25rem;
+		}
+		.toc-group.expanded .toc-sub { max-height: 2000px; }
+		.toc-sub li a {
+			display: block;
+			padding: 0.35rem 0.75rem 0.35rem 1.75rem;
+			font-size: 0.86rem;
+			color: var(--text-muted);
+			text-decoration: none;
+			border-radius: 6px;
+			margin: 1px 0;
+			border-left: 2px solid transparent;
+			line-height: 1.4;
+		}
+		.toc-sub li a:hover { background: rgba(0,0,0,0.035); color: var(--text); }
+		.toc-sub li a.active {
+			background: var(--accent-bg);
+			color: #5a4500;
+			border-left-color: var(--accent);
+			font-weight: 600;
+		}
 
-        .toc { list-style: none; }
-        .toc-group { margin-bottom: 0.15rem; }
+		/* ========== Main Content ========== */
+		.main {
+			flex: 1;
+			margin-left: var(--sidebar-width);
+			padding: 2rem 2.5rem 5rem;
+			min-width: 0;
+		}
+		.main-inner {
+			max-width: 760px;
+			margin: 0 auto;
+		}
+		.loading {
+			padding: 4rem 1rem;
+			text-align: center;
+			color: var(--text-muted);
+		}
 
-        .toc-group-header {
-            display: flex;
-            align-items: center;
-            gap: 0.45rem;
-            padding: 0.45rem 0.75rem;
-            border-radius: 7px;
-            cursor: pointer;
-            color: var(--text);
-            font-size: 0.92rem;
-            font-weight: 600;
-            user-select: none;
-            transition: background 0.12s ease;
-        }
-        .toc-group-header:hover { background: rgba(0,0,0,0.04); }
-        .toc-group-header.active {
-            background: var(--accent-bg);
-            color: #6e5400;
-        }
+		/* Markdown styles */
+		.content h1 {
+			font-size: 2rem; font-weight: 700; letter-spacing: -0.02em;
+			margin: 0.5rem 0 0.75rem;
+		}
+		.content h2 {
+			font-size: 1.55rem; font-weight: 700; letter-spacing: -0.015em;
+			margin: 0; padding: 0;
+		}
+		.content h2:first-of-type { border-top: none; padding-top: 0; }
+		.content h3 {
+			font-size: 1.2rem; font-weight: 600;
+			margin: 2rem 0 0.6rem;
+			letter-spacing: -0.005em;
+		}
+		.content h4 {
+			font-size: 1rem; font-weight: 600;
+			margin: 1.5rem 0 0.5rem;
+			color: var(--text);
+		}
+		.content h2, .content h3, .content h4 {
+			scroll-margin-top: calc(var(--header-height) + var(--breadcrumb-height) + 1rem);
+		}
+		.content p { margin-bottom: 1rem; color: #2a2a2e; }
+		.content ul, .content ol { margin: 0 0 1rem 1.5rem; color: #2a2a2e; }
+		.content li { margin-bottom: 0.35rem; }
+		.content li > p { margin-bottom: 0.35rem; }
+		.content strong { font-weight: 650; color: var(--text); }
+		.content em { font-style: italic; color: #4a4a4e; }
+		.content a {
+			color: var(--link);
+			text-decoration: none;
+			border-bottom: 1px solid rgba(20, 102, 201, 0.25);
+		}
+		.content a:hover { border-bottom-color: var(--link); }
+		.content hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+		.content code {
+			background: var(--code-bg);
+			padding: 0.1rem 0.4rem;
+			border-radius: 4px;
+			font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+			font-size: 0.88em;
+			color: #6b4e00;
+		}
+		.content pre {
+			background: var(--code-bg);
+			padding: 1rem 1.25rem;
+			border-radius: 10px;
+			overflow-x: auto;
+			margin: 1rem 0;
+		}
+		.content pre code { background: none; padding: 0; color: var(--text); }
+		.content blockquote {
+			border-left: 3px solid var(--accent);
+			background: var(--accent-bg);
+			padding: 0.75rem 1rem;
+			margin: 1rem 0;
+			border-radius: 0 8px 8px 0;
+			color: #4a3a00;
+		}
+		.content blockquote p:last-child { margin-bottom: 0; }
+		.content table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.92rem; }
+		.content th, .content td { border: 1px solid var(--border); padding: 0.5rem 0.75rem; text-align: left; }
+		.content th { background: var(--bg-sidebar); font-weight: 600; }
 
-        .toc-caret {
-            display: inline-block;
-            font-size: 0.7rem;
-            color: var(--text-faint);
-            transition: transform 0.18s ease;
-            width: 0.75rem;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        .toc-group.expanded .toc-caret { transform: rotate(90deg); }
+		/* ========== Collapsible Content Sections ========== */
+		.content-section {
+			border-top: 1px solid var(--border);
+			padding-top: 1.5rem;
+			margin-top: 3rem;
+		}
+		.content-section:first-of-type {
+			border-top: none;
+			margin-top: 1.5rem;
+		}
+		.content-section.role-hidden { display: none; }
 
-        .toc-group-label {
-            flex: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+		.section-header {
+			display: flex;
+			align-items: baseline;
+			gap: 0.5rem;
+			cursor: pointer;
+			padding: 0.25rem 0;
+			border-radius: 6px;
+			user-select: none;
+		}
+		.section-header:hover .section-chevron { color: var(--text); }
+		.section-chevron {
+			font-size: 0.75rem;
+			color: var(--text-faint);
+			transition: transform 0.2s ease;
+			flex-shrink: 0;
+			width: 1rem;
+			text-align: center;
+		}
+		.content-section.collapsed .section-chevron { transform: rotate(-90deg); }
+		.section-body {
+			padding-top: 1rem;
+		}
+		.content-section.collapsed .section-body { display: none; }
 
-        .toc-sub {
-            list-style: none;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.22s ease;
-            padding-left: 0.25rem;
-        }
-        .toc-group.expanded .toc-sub {
-            max-height: 2000px;
-        }
+		/* ========== Mini-TOC ("On this page") ========== */
+		.mini-toc {
+			display: none;
+		}
+		.mini-toc-title {
+			font-size: 0.72rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+			color: var(--text-faint);
+			margin-bottom: 0.6rem;
+		}
+		.mini-toc ul {
+			list-style: none;
+			margin: 0; padding: 0;
+		}
+		.mini-toc ul li a {
+			display: block;
+			font-size: 0.8rem;
+			line-height: 1.45;
+			color: var(--text-faint);
+			text-decoration: none;
+			padding: 0.2rem 0 0.2rem 0.75rem;
+			border-left: 2px solid transparent;
+			transition: color 0.1s, border-color 0.1s;
+		}
+		.mini-toc ul li a:hover { color: var(--text); }
+		.mini-toc ul li a.active {
+			color: var(--accent);
+			border-left-color: var(--accent);
+			font-weight: 500;
+		}
 
-        .toc-sub li a {
-            display: block;
-            padding: 0.35rem 0.75rem 0.35rem 1.75rem;
-            font-size: 0.86rem;
-            color: var(--text-muted);
-            text-decoration: none;
-            border-radius: 6px;
-            margin: 1px 0;
-            border-left: 2px solid transparent;
-            line-height: 1.4;
-        }
-        .toc-sub li a:hover {
-            background: rgba(0,0,0,0.035);
-            color: var(--text);
-        }
-        .toc-sub li a.active {
-            background: var(--accent-bg);
-            color: #5a4500;
-            border-left-color: var(--accent);
-            font-weight: 600;
-        }
+		/* ========== Back to Top ========== */
+		.back-to-top {
+			position: fixed;
+			bottom: 2rem;
+			right: 2rem;
+			width: 42px;
+			height: 42px;
+			border-radius: 50%;
+			background: var(--accent);
+			color: #fff;
+			border: none;
+			font-size: 1.1rem;
+			font-weight: 600;
+			cursor: pointer;
+			opacity: 0;
+			pointer-events: none;
+			transform: translateY(8px);
+			transition: opacity 0.2s, transform 0.2s;
+			z-index: 21;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+		}
+		.back-to-top.visible {
+			opacity: 1;
+			pointer-events: auto;
+			transform: translateY(0);
+		}
+		.back-to-top:hover { background: #b8921f; }
 
-        /* ---------- Main Content ---------- */
-        .main {
-            flex: 1;
-            margin-left: var(--sidebar-width);
-            padding: 2rem 2.5rem 5rem;
-            min-width: 0;
-        }
-        .main-inner {
-            max-width: 760px;
-            margin: 0 auto;
-        }
+		/* ========== Footer ========== */
+		.footer {
+			max-width: 760px;
+			margin: 4rem auto 0;
+			padding-top: 2rem;
+			border-top: 1px solid var(--border);
+			text-align: center;
+			font-size: 0.78rem;
+			color: var(--text-faint);
+		}
 
-        .loading {
-            padding: 4rem 1rem;
-            text-align: center;
-            color: var(--text-muted);
-        }
+		/* ========== Backdrop ========== */
+		.backdrop {
+			display: none;
+			position: fixed;
+			inset: 0;
+			background: rgba(0,0,0,0.35);
+			z-index: 15;
+		}
+		.backdrop.visible { display: block; }
 
-        /* Markdown content styling */
-        .content h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin: 0.5rem 0 0.75rem;
-        }
-        .content h2 {
-            font-size: 1.55rem;
-            font-weight: 700;
-            letter-spacing: -0.015em;
-            margin: 3rem 0 1rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border);
-        }
-        .content h2:first-of-type {
-            border-top: none;
-            padding-top: 0;
-        }
-        .content h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin: 2rem 0 0.6rem;
-            letter-spacing: -0.005em;
-        }
-        .content h4 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin: 1.5rem 0 0.5rem;
-            color: var(--text);
-        }
-        .content h2, .content h3, .content h4 {
-            scroll-margin-top: calc(var(--header-height) + 1rem);
-        }
+		/* ========== Wide screen: mini-toc visible ========== */
+		@media (min-width: 1500px) {
+			.mini-toc {
+				display: block;
+				position: fixed;
+				top: calc(var(--header-height) + var(--breadcrumb-height) + 2rem);
+				/* Position to the right of the centered 760px content column */
+				left: calc(var(--sidebar-width) / 2 + 50vw + 400px);
+				width: 180px;
+				max-height: calc(100vh - var(--header-height) - var(--breadcrumb-height) - 4rem);
+				overflow-y: auto;
+				z-index: 5;
+			}
+			.mini-toc::-webkit-scrollbar { width: 4px; }
+			.mini-toc::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+		}
 
-        .content p {
-            margin-bottom: 1rem;
-            color: #2a2a2e;
-        }
-        .content ul, .content ol {
-            margin: 0 0 1rem 1.5rem;
-            color: #2a2a2e;
-        }
-        .content li { margin-bottom: 0.35rem; }
-        .content li > p { margin-bottom: 0.35rem; }
-
-        .content strong { font-weight: 650; color: var(--text); }
-        .content em { font-style: italic; color: #4a4a4e; }
-
-        .content a {
-            color: var(--link);
-            text-decoration: none;
-            border-bottom: 1px solid rgba(20, 102, 201, 0.25);
-        }
-        .content a:hover {
-            border-bottom-color: var(--link);
-        }
-
-        .content hr {
-            border: none;
-            border-top: 1px solid var(--border);
-            margin: 2.5rem 0;
-        }
-
-        .content code {
-            background: var(--code-bg);
-            padding: 0.1rem 0.4rem;
-            border-radius: 4px;
-            font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
-            font-size: 0.88em;
-            color: #6b4e00;
-        }
-        .content pre {
-            background: var(--code-bg);
-            padding: 1rem 1.25rem;
-            border-radius: 10px;
-            overflow-x: auto;
-            margin: 1rem 0;
-        }
-        .content pre code {
-            background: none;
-            padding: 0;
-            color: var(--text);
-        }
-
-        .content blockquote {
-            border-left: 3px solid var(--accent);
-            background: var(--accent-bg);
-            padding: 0.75rem 1rem;
-            margin: 1rem 0;
-            border-radius: 0 8px 8px 0;
-            color: #4a3a00;
-        }
-        .content blockquote p:last-child { margin-bottom: 0; }
-
-        .content table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 1rem 0;
-            font-size: 0.92rem;
-        }
-        .content th, .content td {
-            border: 1px solid var(--border);
-            padding: 0.5rem 0.75rem;
-            text-align: left;
-        }
-        .content th {
-            background: var(--bg-sidebar);
-            font-weight: 600;
-        }
-
-        .footer {
-            max-width: 760px;
-            margin: 4rem auto 0;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            font-size: 0.78rem;
-            color: var(--text-faint);
-        }
-
-        /* Backdrop for mobile drawer */
-        .backdrop {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.35);
-            z-index: 15;
-        }
-        .backdrop.visible { display: block; }
-
-        /* ---------- Responsive ---------- */
-        @media (max-width: 900px) {
-            .topbar .menu-btn { display: inline-flex; }
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.22s ease;
-                box-shadow: 2px 0 16px rgba(0,0,0,0.08);
-                z-index: 18;
-            }
-            .sidebar.open { transform: translateX(0); }
-            .main {
-                margin-left: 0;
-                padding: 1.5rem 1.25rem 4rem;
-            }
-            .content h1 { font-size: 1.65rem; }
-            .content h2 { font-size: 1.35rem; margin-top: 2.25rem; }
-            .content h3 { font-size: 1.1rem; }
-        }
-    </style>
+		/* ========== Responsive ========== */
+		@media (max-width: 900px) {
+			.topbar .menu-btn { display: inline-flex; }
+			.sidebar {
+				transform: translateX(-100%);
+				transition: transform 0.22s ease;
+				box-shadow: 2px 0 16px rgba(0,0,0,0.08);
+				z-index: 18;
+			}
+			.sidebar.open { transform: translateX(0); }
+			.main {
+				margin-left: 0;
+				padding: 1.5rem 1.25rem 4rem;
+			}
+			.breadcrumb-bar {
+				left: 0;
+				padding: 0 1.25rem;
+			}
+			.content h1 { font-size: 1.65rem; }
+			.content h2 { font-size: 1.35rem; }
+			.content h3 { font-size: 1.1rem; }
+		}
+	</style>
 </head>
 <body>
-    <header class="topbar">
-        <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation">☰</button>
-        <div class="brand">
-            <span class="brand-title">ShopTracker User Manual</span>
-            <span class="brand-sub">Hydraulics SR-80</span>
-        </div>
-    </header>
+	<header class="topbar">
+		<button class="menu-btn" id="menuBtn" aria-label="Toggle navigation">☰</button>
+		<div class="brand">
+			<span class="brand-title">ShopTracker User Manual</span>
+			<span class="brand-sub">Hydraulics SR-80</span>
+		</div>
+	</header>
 
-    <div class="backdrop" id="backdrop"></div>
+	<div class="breadcrumb-bar" id="breadcrumbBar"></div>
 
-    <div class="layout">
-        <aside class="sidebar" id="sidebar" aria-label="Table of contents">
-            <div class="search-wrap" id="searchWrap">
-                <span class="search-icon" aria-hidden="true">⌕</span>
-                <input
-                    type="search"
-                    class="search-input"
-                    id="searchInput"
-                    placeholder="Search the manual"
-                    autocomplete="off"
-                    spellcheck="false"
-                    aria-label="Search the manual"
-                >
-                <span class="search-hint" id="searchHint">⌘K</span>
-                <button type="button" class="search-clear" id="searchClear" aria-label="Clear search">✕</button>
-            </div>
-            <div class="sidebar-title">Contents</div>
-            <ul class="toc" id="toc">
-                <li style="padding: 0.5rem 1rem; color: var(--text-faint); font-size: 0.85rem;">Loading…</li>
-            </ul>
-            <div class="no-results" id="noResults">No matches found</div>
-        </aside>
+	<div class="backdrop" id="backdrop"></div>
 
-        <main class="main">
-            <div class="main-inner">
-                <article class="content" id="content">
-                    <div class="loading">Loading manual…</div>
-                </article>
-                <div class="footer">Hydraulics SR-80 &middot; ShopTracker</div>
-            </div>
-        </main>
-    </div>
+	<div class="layout">
+		<aside class="sidebar" id="sidebar" aria-label="Table of contents">
+			<div class="role-pills" id="rolePills">
+				<button class="role-pill active" data-role="all">All</button>
+				<button class="role-pill" data-role="fc">Front Counter</button>
+				<button class="role-pill" data-role="tech">Tech</button>
+				<button class="role-pill" data-role="admin">Admin</button>
+			</div>
+			<div class="search-wrap" id="searchWrap">
+				<span class="search-icon" aria-hidden="true">⌕</span>
+				<input
+					type="search"
+					class="search-input"
+					id="searchInput"
+					placeholder="Search the manual"
+					autocomplete="off"
+					spellcheck="false"
+					aria-label="Search the manual"
+				>
+				<span class="search-hint" id="searchHint">⌘K</span>
+				<button type="button" class="search-clear" id="searchClear" aria-label="Clear search">✕</button>
+			</div>
+			<div class="sidebar-title">Contents</div>
+			<ul class="toc" id="toc">
+				<li style="padding: 0.5rem 1rem; color: var(--text-faint); font-size: 0.85rem;">Loading…</li>
+			</ul>
+			<div class="no-results" id="noResults">No matches found</div>
+		</aside>
 
-    <script>
-        // ---------- GitHub-compatible slug ----------
-        // Matches github-slugger behavior: lowercase, strip punctuation
-        // (keeping letters, digits, spaces, hyphens, underscores), each
-        // space individually becomes a hyphen (so "A & B" -> "a--b").
-        const seenSlugs = {};
-        function slugify(text) {
-            let s = text.toLowerCase();
-            // Remove anything that isn't a letter, number, space, hyphen, or underscore
-            s = s.replace(/[^\p{L}\p{N}\s\-_]/gu, '');
-            s = s.replace(/ /g, '-');
-            // Collapse any accidental runs caused by exotic whitespace — keep double
-            // hyphens from real double-spaces intact, so no collapsing here.
-            let base = s;
-            let n = seenSlugs[base] || 0;
-            seenSlugs[base] = n + 1;
-            return n === 0 ? base : `${base}-${n}`;
-        }
+		<main class="main">
+			<div class="main-inner">
+				<article class="content" id="content">
+					<div class="loading">Loading manual…</div>
+				</article>
+				<div class="footer">Hydraulics SR-80 &middot; ShopTracker</div>
+			</div>
+		</main>
+	</div>
 
-        // ---------- Render markdown & build TOC ----------
-        async function loadManual() {
-            try {
-                const response = await fetch('user-manual.md');
-                if (!response.ok) throw new Error('Failed to load manual');
-                let markdown = await response.text();
+	<div class="mini-toc" id="miniToc"></div>
+	<button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
 
-                // Strip the existing in-document Table of Contents block.
-                // We replace it with the sidebar, so it's redundant in the body.
-                markdown = stripInlineTOC(markdown);
+	<script>
+		// ============================================================
+		// CONSTANTS
+		// ============================================================
 
-                // Configure marked to emit clean HTML
-                marked.setOptions({ gfm: true, breaks: false, headerIds: false, mangle: false });
+		// Which roles can see which H2 section
+		const SECTION_ROLES = {
+			'getting-started':            ['fc', 'tech', 'admin'],
+			'front-counter':              ['fc', 'admin'],
+			'customers':                  ['fc', 'admin'],
+			'companies':                  ['fc', 'admin'],
+			'tech-station':               ['tech', 'admin'],
+			'admin':                      ['admin'],
+			'reporting-a-problem':        ['fc', 'tech', 'admin'],
+			'equipment-tags':             ['fc', 'tech', 'admin'],
+			'reference--troubleshooting': ['fc', 'tech', 'admin'],
+		};
 
-                const html = marked.parse(markdown);
-                const content = document.getElementById('content');
-                content.innerHTML = html;
+		let activeRole = localStorage.getItem('sr80-manual-role') || 'all';
+		let currentH2Id = '';
+		let currentH3Id = '';
 
-                // Assign IDs to all headers using the slugger
-                assignHeaderIds(content);
+		// ============================================================
+		// SLUG GENERATOR (GitHub-compatible)
+		// ============================================================
 
-                // Build sidebar TOC from the rendered headers
-                buildSidebarTOC(content);
+		const seenSlugs = {};
+		function slugify(text) {
+			let s = text.toLowerCase();
+			s = s.replace(/[^\p{L}\p{N}\s\-_]/gu, '');
+			s = s.replace(/ /g, '-');
+			let base = s;
+			let n = seenSlugs[base] || 0;
+			seenSlugs[base] = n + 1;
+			return n === 0 ? base : `${base}-${n}`;
+		}
 
-                // Build full-text search index from section content
-                buildSectionIndex(content);
+		// ============================================================
+		// LOAD & RENDER
+		// ============================================================
 
-                // Wire up interactions
-                setupScrollSpy(content);
-                setupSearch();
-                handleInitialHash();
-            } catch (err) {
-                console.error(err);
-                document.getElementById('content').innerHTML =
-                    '<p style="text-align:center;color:var(--text-muted);padding:4rem 0;">' +
-                    'Could not load the manual. Please try refreshing.</p>';
-            }
-        }
+		async function loadManual() {
+			try {
+				const response = await fetch('user-manual.md');
+				if (!response.ok) throw new Error('Failed to load manual');
+				let markdown = await response.text();
+				markdown = stripInlineTOC(markdown);
 
-        function stripInlineTOC(md) {
-            // Remove a "## Table of Contents" heading and its bullet list,
-            // up until the next heading or horizontal rule.
-            const lines = md.split('\n');
-            const out = [];
-            let inTOC = false;
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i];
-                if (!inTOC && /^##\s+Table of Contents\s*$/i.test(line)) {
-                    inTOC = true;
-                    continue;
-                }
-                if (inTOC) {
-                    // Exit the TOC block when we hit the next heading or a standalone ---
-                    if (/^#{1,6}\s+/.test(line)) {
-                        inTOC = false;
-                        out.push(line);
-                        continue;
-                    }
-                    if (/^---\s*$/.test(line)) {
-                        inTOC = false;
-                        // Skip the --- separator too since it was the TOC's closer
-                        continue;
-                    }
-                    // Skip TOC content (bullets, blank lines, etc.)
-                    continue;
-                }
-                out.push(line);
-            }
-            return out.join('\n');
-        }
+				marked.setOptions({ gfm: true, breaks: false, headerIds: false, mangle: false });
+				const html = marked.parse(markdown);
+				const content = document.getElementById('content');
+				content.innerHTML = html;
 
-        function assignHeaderIds(root) {
-            const headers = root.querySelectorAll('h1, h2, h3, h4, h5, h6');
-            headers.forEach(h => {
-                const text = h.textContent || '';
-                const id = slugify(text);
-                h.id = id;
-            });
-        }
+				assignHeaderIds(content);
+				buildSidebarTOC(content);
+				buildSectionIndex(content);
 
-        function buildSidebarTOC(root) {
-            const toc = document.getElementById('toc');
-            toc.innerHTML = '';
+				// Wrap H2 sections for collapsibility (after TOC + index built)
+				wrapContentSections(content);
 
-            // H2 = top-level group (collapsible), H3 = sub-item
-            const h2s = root.querySelectorAll('h2');
-            h2s.forEach(h2 => {
-                const groupLi = document.createElement('li');
-                groupLi.className = 'toc-group';
-                groupLi.dataset.targetId = h2.id;
+				setupRoleFilter();
+				setupScrollSpy(content);
+				setupSearch();
+				setupBreadcrumb();
+				setupBackToTop();
+				setupCollapsibleSections();
+				handleInitialHash();
+			} catch (err) {
+				console.error(err);
+				document.getElementById('content').innerHTML =
+					'<p style="text-align:center;color:var(--text-muted);padding:4rem 0;">' +
+					'Could not load the manual. Please try refreshing.</p>';
+			}
+		}
 
-                const header = document.createElement('div');
-                header.className = 'toc-group-header';
-                header.innerHTML =
-                    '<span class="toc-caret">▶</span>' +
-                    '<span class="toc-group-label"></span>';
-                header.querySelector('.toc-group-label').textContent = h2.textContent;
+		function stripInlineTOC(md) {
+			const lines = md.split('\n');
+			const out = [];
+			let inTOC = false;
+			for (let i = 0; i < lines.length; i++) {
+				const line = lines[i];
+				if (!inTOC && /^##\s+Table of Contents\s*$/i.test(line)) { inTOC = true; continue; }
+				if (inTOC) {
+					if (/^#{1,6}\s+/.test(line)) { inTOC = false; out.push(line); continue; }
+					if (/^---\s*$/.test(line)) { inTOC = false; continue; }
+					continue;
+				}
+				out.push(line);
+			}
+			return out.join('\n');
+		}
 
-                header.addEventListener('click', (e) => {
-                    const hasSubs = groupLi.querySelector('.toc-sub li');
-                    if (hasSubs) {
-                        // Toggle expansion, but ALSO navigate to the section
-                        groupLi.classList.toggle('expanded');
-                    }
-                    navigateTo(h2.id);
-                });
+		function assignHeaderIds(root) {
+			root.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
+				h.id = slugify(h.textContent || '');
+			});
+		}
 
-                groupLi.appendChild(header);
+		// ============================================================
+		// WRAP CONTENT SECTIONS (for collapsibility + role filtering)
+		// ============================================================
 
-                // Collect h3s that belong to this h2 (until the next h2)
-                const subList = document.createElement('ul');
-                subList.className = 'toc-sub';
-                let cursor = h2.nextElementSibling;
-                while (cursor && cursor.tagName !== 'H2') {
-                    if (cursor.tagName === 'H3') {
-                        // Capture this specific h3 in a block-scoped const so the
-                        // click handler closure doesn't see the loop cursor change.
-                        const h3 = cursor;
-                        const h3Id = h3.id;
-                        const subLi = document.createElement('li');
-                        const a = document.createElement('a');
-                        a.href = '#' + h3Id;
-                        a.textContent = h3.textContent;
-                        a.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            navigateTo(h3Id);
-                        });
-                        subLi.appendChild(a);
-                        subList.appendChild(subLi);
-                    }
-                    cursor = cursor.nextElementSibling;
-                }
-                groupLi.appendChild(subList);
-                toc.appendChild(groupLi);
-            });
+		function wrapContentSections(root) {
+			const h2s = Array.from(root.querySelectorAll(':scope > h2'));
 
-            // Expand the first group by default
-            const first = toc.querySelector('.toc-group');
-            if (first) first.classList.add('expanded');
-        }
+			h2s.forEach(h2 => {
+				const section = document.createElement('section');
+				section.className = 'content-section collapsed';
+				const roles = SECTION_ROLES[h2.id] || ['fc', 'tech', 'admin'];
+				section.dataset.roles = roles.join(',');
+				section.dataset.sectionId = h2.id;
 
-        function navigateTo(id) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            history.replaceState(null, '', '#' + id);
-            // Close sidebar on mobile after navigation
-            if (window.innerWidth <= 900) {
-                closeSidebar();
-            }
-        }
+				// Header row (clickable)
+				const header = document.createElement('div');
+				header.className = 'section-header';
+				const chevron = document.createElement('span');
+				chevron.className = 'section-chevron';
+				chevron.textContent = '▶';
 
-        function handleInitialHash() {
-            if (location.hash) {
-                const id = decodeURIComponent(location.hash.slice(1));
-                const el = document.getElementById(id);
-                if (el) {
-                    // Expand the enclosing group in the sidebar
-                    expandGroupContaining(id);
-                    // Defer scroll so layout is settled
-                    setTimeout(() => {
-                        el.scrollIntoView({ behavior: 'auto', block: 'start' });
-                    }, 60);
-                }
-            }
-        }
+				// Body
+				const body = document.createElement('div');
+				body.className = 'section-body';
 
-        function expandGroupContaining(id) {
-            const toc = document.getElementById('toc');
-            const groups = toc.querySelectorAll('.toc-group');
-            groups.forEach(g => {
-                if (g.dataset.targetId === id) {
-                    g.classList.add('expanded');
-                    return;
-                }
-                const match = g.querySelector('.toc-sub a[href="#' + CSS.escape(id) + '"]');
-                if (match) g.classList.add('expanded');
-            });
-        }
+				// Collect siblings until next H2 or end
+				const siblings = [];
+				let cursor = h2.nextElementSibling;
+				while (cursor && cursor.tagName !== 'H2') {
+					siblings.push(cursor);
+					cursor = cursor.nextElementSibling;
+				}
 
-        // ---------- Scroll spy ----------
-        function setupScrollSpy(root) {
-            const headers = Array.from(root.querySelectorAll('h2, h3'));
-            if (!headers.length) return;
+				// Insert section into DOM
+				h2.parentNode.insertBefore(section, h2);
+				header.appendChild(chevron);
+				header.appendChild(h2);
+				section.appendChild(header);
+				siblings.forEach(el => body.appendChild(el));
+				section.appendChild(body);
+			});
+		}
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        setActive(entry.target.id);
-                    }
-                });
-            }, {
-                rootMargin: '-80px 0px -70% 0px',
-                threshold: 0
-            });
+		// ============================================================
+		// COLLAPSIBLE SECTIONS
+		// ============================================================
 
-            headers.forEach(h => observer.observe(h));
-        }
+		function setupCollapsibleSections() {
+			document.querySelectorAll('.section-header').forEach(header => {
+				header.addEventListener('click', () => {
+					const section = header.closest('.content-section');
+					toggleSection(section);
+				});
+			});
+		}
 
-        function setActive(id) {
-            const toc = document.getElementById('toc');
+		function toggleSection(section) {
+			if (!section) return;
+			section.classList.toggle('collapsed');
+			const chevron = section.querySelector('.section-chevron');
+			if (chevron) {
+				chevron.textContent = section.classList.contains('collapsed') ? '▶' : '▼';
+			}
+		}
 
-            // Clear previous active states
-            toc.querySelectorAll('.toc-group-header.active').forEach(el => el.classList.remove('active'));
-            toc.querySelectorAll('.toc-sub a.active').forEach(el => el.classList.remove('active'));
+		function expandSection(section) {
+			if (!section || !section.classList.contains('collapsed')) return;
+			section.classList.remove('collapsed');
+			const chevron = section.querySelector('.section-chevron');
+			if (chevron) chevron.textContent = '▼';
+		}
 
-            // Find whatever matches this id (either an h2 group OR an h3 sub-link)
-            const groups = toc.querySelectorAll('.toc-group');
-            for (const g of groups) {
-                if (g.dataset.targetId === id) {
-                    g.querySelector('.toc-group-header').classList.add('active');
-                    g.classList.add('expanded');
-                    return;
-                }
-                const sub = g.querySelector('.toc-sub a[href="#' + CSS.escape(id) + '"]');
-                if (sub) {
-                    sub.classList.add('active');
-                    g.querySelector('.toc-group-header').classList.add('active');
-                    g.classList.add('expanded');
-                    return;
-                }
-            }
-        }
+		function collapseSection(section) {
+			if (!section || section.classList.contains('collapsed')) return;
+			section.classList.add('collapsed');
+			const chevron = section.querySelector('.section-chevron');
+			if (chevron) chevron.textContent = '▶';
+		}
 
-        // ---------- Full-text section index ----------
-        // Maps each heading ID to the text content of its section body
-        const sectionIndex = {};
+		function expandAll() {
+			document.querySelectorAll('.content-section.collapsed:not(.role-hidden)').forEach(expandSection);
+		}
 
-        function buildSectionIndex(root) {
-            const allHeaders = Array.from(root.querySelectorAll('h2, h3'));
-            allHeaders.forEach((header, i) => {
-                const id = header.id;
-                const nextHeader = allHeaders[i + 1];
-                const texts = [];
-                let cursor = header.nextElementSibling;
-                while (cursor && cursor !== nextHeader) {
-                    // Skip other headers (h4, h5, etc.) and just grab body text
-                    if (!/^H[1-6]$/.test(cursor.tagName)) {
-                        const t = (cursor.textContent || '').trim();
-                        if (t) texts.push(t);
-                    }
-                    cursor = cursor.nextElementSibling;
-                }
-                sectionIndex[id] = texts.join(' ');
-            });
-        }
+		function collapseAll() {
+			document.querySelectorAll('.content-section:not(.collapsed):not(.role-hidden)').forEach(collapseSection);
+		}
 
-        function findSnippet(text, query, radius) {
-            radius = radius || 40;
-            const lower = text.toLowerCase();
-            const idx = lower.indexOf(query.toLowerCase());
-            if (idx === -1) return null;
-            const start = Math.max(0, idx - radius);
-            const end = Math.min(text.length, idx + query.length + radius);
-            let snippet = '';
-            if (start > 0) snippet += '…';
-            snippet += text.slice(start, end);
-            if (end < text.length) snippet += '…';
-            return snippet;
-        }
+		// ============================================================
+		// ROLE FILTERING
+		// ============================================================
 
-        // ---------- Search / filter ----------
-        function escapeHTML(s) {
-            return s.replace(/[&<>"']/g, c => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-            }[c]));
-        }
-        function escapeRegex(s) {
-            return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
-        function highlightMatch(text, query) {
-            if (!query) return escapeHTML(text);
-            const re = new RegExp('(' + escapeRegex(query) + ')', 'ig');
-            // Escape first, then inject highlight spans (regex runs on raw text,
-            // we then re-assemble using escaped chunks)
-            const parts = text.split(re);
-            return parts.map(p => {
-                if (p.toLowerCase() === query.toLowerCase()) {
-                    return '<span class="toc-highlight">' + escapeHTML(p) + '</span>';
-                }
-                return escapeHTML(p);
-            }).join('');
-        }
+		function setupRoleFilter() {
+			const pills = document.querySelectorAll('.role-pill');
+			pills.forEach(pill => {
+				pill.addEventListener('click', () => {
+					const role = pill.dataset.role;
+					activeRole = role;
+					localStorage.setItem('sr80-manual-role', role);
 
-        function filterTOC(rawQuery) {
-            const toc = document.getElementById('toc');
-            const noResults = document.getElementById('noResults');
-            const query = (rawQuery || '').trim().toLowerCase();
+					pills.forEach(p => p.classList.toggle('active', p.dataset.role === role));
+					applyRoleFilter(role);
+				});
+			});
 
-            // Clear any previous snippets
-            toc.querySelectorAll('.toc-snippet').forEach(el => el.remove());
-            toc.querySelectorAll('.toc-snippet-inline').forEach(el => el.remove());
+			// Apply saved role
+			pills.forEach(p => p.classList.toggle('active', p.dataset.role === activeRole));
+			applyRoleFilter(activeRole);
+		}
 
-            if (!query) {
-                toc.classList.remove('filtering');
-                noResults.classList.remove('visible');
-                // Restore original labels (strip any highlight spans)
-                toc.querySelectorAll('.toc-group-label').forEach(el => {
-                    el.textContent = el.dataset.label || el.textContent;
-                });
-                toc.querySelectorAll('.toc-sub a').forEach(el => {
-                    el.textContent = el.dataset.label || el.textContent;
-                });
-                toc.querySelectorAll('.toc-group').forEach(g => {
-                    g.classList.remove('has-match', 'expanded-by-search');
-                });
-                // Re-expand only the currently active group (or the first)
-                const activeHeader = toc.querySelector('.toc-group-header.active');
-                if (!activeHeader) {
-                    const first = toc.querySelector('.toc-group');
-                    if (first) first.classList.add('expanded');
-                }
-                return;
-            }
+		function applyRoleFilter(role) {
+			// Filter content sections
+			document.querySelectorAll('.content-section').forEach(section => {
+				const roles = (section.dataset.roles || '').split(',');
+				const hidden = role !== 'all' && !roles.includes(role);
+				section.classList.toggle('role-hidden', hidden);
+			});
 
-            toc.classList.add('filtering');
-            let anyMatch = false;
+			// Filter TOC groups
+			document.querySelectorAll('.toc-group').forEach(group => {
+				const sectionId = group.dataset.targetId;
+				const roles = SECTION_ROLES[sectionId] || ['fc', 'tech', 'admin'];
+				const hidden = role !== 'all' && !roles.includes(role);
+				group.classList.toggle('role-hidden', hidden);
+			});
 
-            toc.querySelectorAll('.toc-group').forEach(group => {
-                const headerLabel = group.querySelector('.toc-group-label');
-                const groupText = (headerLabel.dataset.label || headerLabel.textContent);
-                const groupId = group.dataset.targetId;
-                const groupHeadingMatches = groupText.toLowerCase().includes(query);
-                // Check body text for this H2 section
-                const groupBodyText = sectionIndex[groupId] || '';
-                const groupBodyMatches = groupBodyText.toLowerCase().includes(query);
-                const groupMatches = groupHeadingMatches || groupBodyMatches;
+			// Update breadcrumb role indicator
+			updateBreadcrumb();
+		}
 
-                let subMatchCount = 0;
-                group.querySelectorAll('.toc-sub li').forEach(li => {
-                    const a = li.querySelector('a');
-                    const label = a.dataset.label || a.textContent;
-                    const href = a.getAttribute('href');
-                    const subId = href ? href.slice(1) : '';
-                    const headingMatches = label.toLowerCase().includes(query);
-                    // Check body text for this H3 section
-                    const bodyText = sectionIndex[subId] || '';
-                    const bodyMatches = bodyText.toLowerCase().includes(query);
+		// ============================================================
+		// SIDEBAR TOC
+		// ============================================================
 
-                    if (headingMatches || bodyMatches) {
-                        li.classList.add('match');
-                        if (headingMatches) {
-                            a.innerHTML = highlightMatch(label, query);
-                        } else {
-                            a.textContent = label;
-                        }
-                        // Show context snippet if match is in body (not heading)
-                        if (bodyMatches) {
-                            const snippet = findSnippet(bodyText, query);
-                            if (snippet) {
-                                const snippetEl = document.createElement('span');
-                                snippetEl.className = 'toc-snippet';
-                                snippetEl.innerHTML = highlightMatch(snippet, query);
-                                li.appendChild(snippetEl);
-                            }
-                        }
-                        subMatchCount++;
-                    } else {
-                        li.classList.remove('match');
-                        a.textContent = label;
-                    }
-                });
+		function buildSidebarTOC(root) {
+			const toc = document.getElementById('toc');
+			toc.innerHTML = '';
 
-                if (groupMatches || subMatchCount > 0) {
-                    group.classList.add('has-match', 'expanded');
-                    anyMatch = true;
-                    if (groupHeadingMatches) {
-                        headerLabel.innerHTML = highlightMatch(groupText, query);
-                    } else {
-                        headerLabel.textContent = groupText;
-                    }
-                    // Show snippet on the H2 header if body matched but heading didn't
-                    if (groupBodyMatches && !groupHeadingMatches && subMatchCount === 0) {
-                        const snippet = findSnippet(groupBodyText, query);
-                        if (snippet) {
-                            const snippetEl = document.createElement('span');
-                            snippetEl.className = 'toc-snippet-inline';
-                            snippetEl.innerHTML = highlightMatch(snippet, query);
-                            headerLabel.parentElement.appendChild(snippetEl);
-                        }
-                    }
-                } else {
-                    group.classList.remove('has-match');
-                    headerLabel.textContent = groupText;
-                }
-            });
+			const h2s = root.querySelectorAll('h2');
+			h2s.forEach(h2 => {
+				const groupLi = document.createElement('li');
+				groupLi.className = 'toc-group';
+				groupLi.dataset.targetId = h2.id;
 
-            noResults.classList.toggle('visible', !anyMatch);
-        }
+				const header = document.createElement('div');
+				header.className = 'toc-group-header';
+				header.innerHTML =
+					'<span class="toc-caret">▶</span>' +
+					'<span class="toc-group-label"></span>';
+				header.querySelector('.toc-group-label').textContent = h2.textContent;
 
-        function setupSearch() {
-            const input = document.getElementById('searchInput');
-            const clearBtn = document.getElementById('searchClear');
-            const wrap = document.getElementById('searchWrap');
+				header.addEventListener('click', () => {
+					const hasSubs = groupLi.querySelector('.toc-sub li');
+					if (hasSubs) groupLi.classList.toggle('expanded');
+					navigateTo(h2.id);
+				});
 
-            // Cache original labels so we can restore them after highlighting
-            document.querySelectorAll('.toc-group-label').forEach(el => {
-                el.dataset.label = el.textContent;
-            });
-            document.querySelectorAll('.toc-sub a').forEach(el => {
-                el.dataset.label = el.textContent;
-            });
+				groupLi.appendChild(header);
 
-            input.addEventListener('input', (e) => {
-                const v = e.target.value;
-                wrap.classList.toggle('has-value', v.length > 0);
-                filterTOC(v);
-            });
+				const subList = document.createElement('ul');
+				subList.className = 'toc-sub';
+				let cursor = h2.nextElementSibling;
+				while (cursor && cursor.tagName !== 'H2') {
+					if (cursor.tagName === 'H3') {
+						const h3 = cursor;
+						const h3Id = h3.id;
+						const subLi = document.createElement('li');
+						const a = document.createElement('a');
+						a.href = '#' + h3Id;
+						a.textContent = h3.textContent;
+						a.addEventListener('click', (e) => {
+							e.preventDefault();
+							navigateTo(h3Id);
+						});
+						subLi.appendChild(a);
+						subList.appendChild(subLi);
+					}
+					cursor = cursor.nextElementSibling;
+				}
+				groupLi.appendChild(subList);
+				toc.appendChild(groupLi);
+			});
 
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    input.value = '';
-                    wrap.classList.remove('has-value');
-                    filterTOC('');
-                    input.blur();
-                } else if (e.key === 'Enter') {
-                    // Jump to the first visible match
-                    const firstMatch =
-                        document.querySelector('.toc.filtering .toc-sub li.match a') ||
-                        document.querySelector('.toc.filtering .toc-group.has-match .toc-group-header');
-                    if (firstMatch) {
-                        firstMatch.click();
-                    }
-                }
-            });
+			const first = toc.querySelector('.toc-group');
+			if (first) first.classList.add('expanded');
+		}
 
-            clearBtn.addEventListener('click', () => {
-                input.value = '';
-                wrap.classList.remove('has-value');
-                filterTOC('');
-                input.focus();
-            });
+		function navigateTo(id) {
+			const el = document.getElementById(id);
+			if (!el) return;
 
-            // Global hotkey: Cmd/Ctrl + K
-            document.addEventListener('keydown', (e) => {
-                if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-                    e.preventDefault();
-                    if (window.innerWidth <= 900) openSidebar();
-                    input.focus();
-                    input.select();
-                }
-            });
-        }
+			// Expand the content section if collapsed
+			const section = el.closest('.content-section');
+			if (section) expandSection(section);
 
-        // ---------- Mobile drawer ----------
-        function openSidebar() {
-            document.getElementById('sidebar').classList.add('open');
-            document.getElementById('backdrop').classList.add('visible');
-        }
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('backdrop').classList.remove('visible');
-        }
-        document.getElementById('menuBtn').addEventListener('click', () => {
-            const sb = document.getElementById('sidebar');
-            if (sb.classList.contains('open')) closeSidebar();
-            else openSidebar();
-        });
-        document.getElementById('backdrop').addEventListener('click', closeSidebar);
+			el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			history.replaceState(null, '', '#' + id);
+			expandGroupContaining(id);
 
-        loadManual();
-    </script>
+			if (window.innerWidth <= 900) closeSidebar();
+		}
+
+		function handleInitialHash() {
+			if (location.hash) {
+				const id = decodeURIComponent(location.hash.slice(1));
+				const el = document.getElementById(id);
+				if (el) {
+					const section = el.closest('.content-section');
+					if (section) expandSection(section);
+					expandGroupContaining(id);
+					setTimeout(() => el.scrollIntoView({ behavior: 'auto', block: 'start' }), 60);
+					return;
+				}
+			}
+			// No hash — expand first visible section
+			const first = document.querySelector('.content-section:not(.role-hidden)');
+			if (first) expandSection(first);
+		}
+
+		function expandGroupContaining(id) {
+			const toc = document.getElementById('toc');
+			toc.querySelectorAll('.toc-group').forEach(g => {
+				if (g.dataset.targetId === id) { g.classList.add('expanded'); return; }
+				const match = g.querySelector('.toc-sub a[href="#' + CSS.escape(id) + '"]');
+				if (match) g.classList.add('expanded');
+			});
+		}
+
+		// ============================================================
+		// SCROLL SPY (also drives breadcrumb + mini-toc)
+		// ============================================================
+
+		function setupScrollSpy(root) {
+			const headers = Array.from(root.querySelectorAll('h2, h3'));
+			if (!headers.length) return;
+
+			const observer = new IntersectionObserver((entries) => {
+				entries.forEach(entry => {
+					if (entry.isIntersecting) {
+						setActive(entry.target.id);
+					}
+				});
+			}, {
+				rootMargin: '-100px 0px -70% 0px',
+				threshold: 0
+			});
+
+			headers.forEach(h => observer.observe(h));
+		}
+
+		function setActive(id) {
+			const toc = document.getElementById('toc');
+			const el = document.getElementById(id);
+			if (!el) return;
+
+			// Update TOC highlights
+			toc.querySelectorAll('.toc-group-header.active').forEach(e => e.classList.remove('active'));
+			toc.querySelectorAll('.toc-sub a.active').forEach(e => e.classList.remove('active'));
+
+			const groups = toc.querySelectorAll('.toc-group');
+			for (const g of groups) {
+				if (g.dataset.targetId === id) {
+					g.querySelector('.toc-group-header').classList.add('active');
+					g.classList.add('expanded');
+					break;
+				}
+				const sub = g.querySelector('.toc-sub a[href="#' + CSS.escape(id) + '"]');
+				if (sub) {
+					sub.classList.add('active');
+					g.querySelector('.toc-group-header').classList.add('active');
+					g.classList.add('expanded');
+					break;
+				}
+			}
+
+			// Track current H2 / H3 for breadcrumb + mini-toc
+			if (el.tagName === 'H2') {
+				currentH2Id = id;
+				currentH3Id = '';
+				buildMiniToc(id);
+			} else if (el.tagName === 'H3') {
+				const section = el.closest('.content-section');
+				if (section) {
+					const h2 = section.querySelector('h2');
+					if (h2 && h2.id !== currentH2Id) {
+						currentH2Id = h2.id;
+						buildMiniToc(h2.id);
+					}
+				}
+				currentH3Id = id;
+			}
+
+			updateBreadcrumb();
+			updateMiniTocHighlight();
+		}
+
+		// ============================================================
+		// BREADCRUMB BAR
+		// ============================================================
+
+		function setupBreadcrumb() {
+			// Initial update happens via scroll spy or handleInitialHash
+		}
+
+		function updateBreadcrumb() {
+			const bar = document.getElementById('breadcrumbBar');
+			const h2El = currentH2Id ? document.getElementById(currentH2Id) : null;
+			const h3El = currentH3Id ? document.getElementById(currentH3Id) : null;
+
+			let html = '';
+
+			// Role indicator
+			if (activeRole !== 'all') {
+				const labels = { fc: 'Front Counter', tech: 'Tech Station', admin: 'Admin' };
+				html += `<span class="bc-role" data-role="${activeRole}">${labels[activeRole]}</span>`;
+			}
+
+			if (h2El) {
+				if (h3El) {
+					html += `<a href="#${currentH2Id}">${h2El.textContent}</a>`;
+					html += `<span class="bc-sep">›</span>`;
+					html += `<span class="bc-current">${h3El.textContent}</span>`;
+				} else {
+					html += `<span class="bc-current">${h2El.textContent}</span>`;
+				}
+			}
+
+			bar.innerHTML = html;
+
+			// Make breadcrumb links clickable
+			bar.querySelectorAll('a').forEach(a => {
+				a.addEventListener('click', e => {
+					e.preventDefault();
+					const href = a.getAttribute('href');
+					if (href) navigateTo(href.slice(1));
+				});
+			});
+		}
+
+		// ============================================================
+		// MINI-TOC ("On this page")
+		// ============================================================
+
+		function buildMiniToc(h2Id) {
+			const miniToc = document.getElementById('miniToc');
+			const section = document.querySelector(`.content-section[data-section-id="${CSS.escape(h2Id)}"]`);
+
+			if (!section || section.classList.contains('collapsed')) {
+				miniToc.innerHTML = '';
+				return;
+			}
+
+			const h3s = section.querySelectorAll('.section-body h3');
+			if (h3s.length < 2) {
+				miniToc.innerHTML = '';
+				return;
+			}
+
+			let html = '<div class="mini-toc-title">On this page</div><ul>';
+			h3s.forEach(h3 => {
+				html += `<li><a href="#${h3.id}" data-id="${h3.id}">${h3.textContent}</a></li>`;
+			});
+			html += '</ul>';
+			miniToc.innerHTML = html;
+
+			miniToc.querySelectorAll('a').forEach(a => {
+				a.addEventListener('click', e => {
+					e.preventDefault();
+					navigateTo(a.dataset.id);
+				});
+			});
+
+			updateMiniTocHighlight();
+		}
+
+		function updateMiniTocHighlight() {
+			const miniToc = document.getElementById('miniToc');
+			miniToc.querySelectorAll('a.active').forEach(a => a.classList.remove('active'));
+			if (currentH3Id) {
+				const a = miniToc.querySelector(`a[data-id="${CSS.escape(currentH3Id)}"]`);
+				if (a) a.classList.add('active');
+			}
+		}
+
+		// ============================================================
+		// BACK TO TOP
+		// ============================================================
+
+		function setupBackToTop() {
+			const btn = document.getElementById('backToTop');
+			let ticking = false;
+
+			window.addEventListener('scroll', () => {
+				if (!ticking) {
+					requestAnimationFrame(() => {
+						btn.classList.toggle('visible', window.scrollY > 400);
+						ticking = false;
+					});
+					ticking = true;
+				}
+			});
+
+			btn.addEventListener('click', () => {
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+			});
+		}
+
+		// ============================================================
+		// FULL-TEXT SECTION INDEX
+		// ============================================================
+
+		const sectionIndex = {};
+
+		function buildSectionIndex(root) {
+			const allHeaders = Array.from(root.querySelectorAll('h2, h3'));
+			allHeaders.forEach((header, i) => {
+				const id = header.id;
+				const nextHeader = allHeaders[i + 1];
+				const texts = [];
+				let cursor = header.nextElementSibling;
+				while (cursor && cursor !== nextHeader) {
+					if (!/^H[1-6]$/.test(cursor.tagName)) {
+						const t = (cursor.textContent || '').trim();
+						if (t) texts.push(t);
+					}
+					cursor = cursor.nextElementSibling;
+				}
+				sectionIndex[id] = texts.join(' ');
+			});
+		}
+
+		function findSnippet(text, query, radius) {
+			radius = radius || 40;
+			const lower = text.toLowerCase();
+			const idx = lower.indexOf(query.toLowerCase());
+			if (idx === -1) return null;
+			const start = Math.max(0, idx - radius);
+			const end = Math.min(text.length, idx + query.length + radius);
+			let snippet = '';
+			if (start > 0) snippet += '…';
+			snippet += text.slice(start, end);
+			if (end < text.length) snippet += '…';
+			return snippet;
+		}
+
+		// ============================================================
+		// SEARCH / FILTER
+		// ============================================================
+
+		function escapeHTML(s) {
+			return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+		}
+		function escapeRegex(s) {
+			return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+		}
+		function highlightMatch(text, query) {
+			if (!query) return escapeHTML(text);
+			const re = new RegExp('(' + escapeRegex(query) + ')', 'ig');
+			const parts = text.split(re);
+			return parts.map(p =>
+				p.toLowerCase() === query.toLowerCase()
+					? '<span class="toc-highlight">' + escapeHTML(p) + '</span>'
+					: escapeHTML(p)
+			).join('');
+		}
+
+		function filterTOC(rawQuery) {
+			const toc = document.getElementById('toc');
+			const noResults = document.getElementById('noResults');
+			const query = (rawQuery || '').trim().toLowerCase();
+
+			toc.querySelectorAll('.toc-snippet').forEach(el => el.remove());
+			toc.querySelectorAll('.toc-snippet-inline').forEach(el => el.remove());
+
+			if (!query) {
+				toc.classList.remove('filtering');
+				noResults.classList.remove('visible');
+				toc.querySelectorAll('.toc-group-label').forEach(el => {
+					el.textContent = el.dataset.label || el.textContent;
+				});
+				toc.querySelectorAll('.toc-sub a').forEach(el => {
+					el.textContent = el.dataset.label || el.textContent;
+				});
+				toc.querySelectorAll('.toc-group').forEach(g => {
+					g.classList.remove('has-match', 'expanded-by-search');
+				});
+				const activeHeader = toc.querySelector('.toc-group-header.active');
+				if (!activeHeader) {
+					const first = toc.querySelector('.toc-group');
+					if (first) first.classList.add('expanded');
+				}
+				// When search clears, also collapse content sections
+				// to respect the user's manual collapse state — don't expand everything
+				return;
+			}
+
+			toc.classList.add('filtering');
+			let anyMatch = false;
+
+			toc.querySelectorAll('.toc-group').forEach(group => {
+				// Skip role-hidden groups
+				if (group.classList.contains('role-hidden')) return;
+
+				const headerLabel = group.querySelector('.toc-group-label');
+				const groupText = (headerLabel.dataset.label || headerLabel.textContent);
+				const groupId = group.dataset.targetId;
+				const groupHeadingMatches = groupText.toLowerCase().includes(query);
+				const groupBodyText = sectionIndex[groupId] || '';
+				const groupBodyMatches = groupBodyText.toLowerCase().includes(query);
+				const groupMatches = groupHeadingMatches || groupBodyMatches;
+
+				let subMatchCount = 0;
+				group.querySelectorAll('.toc-sub li').forEach(li => {
+					const a = li.querySelector('a');
+					const label = a.dataset.label || a.textContent;
+					const href = a.getAttribute('href');
+					const subId = href ? href.slice(1) : '';
+					const headingMatches = label.toLowerCase().includes(query);
+					const bodyText = sectionIndex[subId] || '';
+					const bodyMatches = bodyText.toLowerCase().includes(query);
+
+					if (headingMatches || bodyMatches) {
+						li.classList.add('match');
+						if (headingMatches) {
+							a.innerHTML = highlightMatch(label, query);
+						} else {
+							a.textContent = label;
+						}
+						if (bodyMatches) {
+							const snippet = findSnippet(bodyText, query);
+							if (snippet) {
+								const snippetEl = document.createElement('span');
+								snippetEl.className = 'toc-snippet';
+								snippetEl.innerHTML = highlightMatch(snippet, query);
+								li.appendChild(snippetEl);
+							}
+						}
+						subMatchCount++;
+					} else {
+						li.classList.remove('match');
+						a.textContent = label;
+					}
+				});
+
+				if (groupMatches || subMatchCount > 0) {
+					group.classList.add('has-match', 'expanded');
+					anyMatch = true;
+					if (groupHeadingMatches) {
+						headerLabel.innerHTML = highlightMatch(groupText, query);
+					} else {
+						headerLabel.textContent = groupText;
+					}
+					if (groupBodyMatches && !groupHeadingMatches && subMatchCount === 0) {
+						const snippet = findSnippet(groupBodyText, query);
+						if (snippet) {
+							const snippetEl = document.createElement('span');
+							snippetEl.className = 'toc-snippet-inline';
+							snippetEl.innerHTML = highlightMatch(snippet, query);
+							headerLabel.parentElement.appendChild(snippetEl);
+						}
+					}
+				} else {
+					group.classList.remove('has-match');
+					headerLabel.textContent = groupText;
+				}
+			});
+
+			noResults.classList.toggle('visible', !anyMatch);
+		}
+
+		function setupSearch() {
+			const input = document.getElementById('searchInput');
+			const clearBtn = document.getElementById('searchClear');
+			const wrap = document.getElementById('searchWrap');
+
+			document.querySelectorAll('.toc-group-label').forEach(el => { el.dataset.label = el.textContent; });
+			document.querySelectorAll('.toc-sub a').forEach(el => { el.dataset.label = el.textContent; });
+
+			input.addEventListener('input', (e) => {
+				const v = e.target.value;
+				wrap.classList.toggle('has-value', v.length > 0);
+				filterTOC(v);
+
+				// When searching, expand all content sections so results are visible
+				if (v.length > 0) expandAll();
+			});
+
+			input.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape') {
+					input.value = '';
+					wrap.classList.remove('has-value');
+					filterTOC('');
+					input.blur();
+				} else if (e.key === 'Enter') {
+					const firstMatch =
+						document.querySelector('.toc.filtering .toc-sub li.match a') ||
+						document.querySelector('.toc.filtering .toc-group.has-match .toc-group-header');
+					if (firstMatch) firstMatch.click();
+				}
+			});
+
+			clearBtn.addEventListener('click', () => {
+				input.value = '';
+				wrap.classList.remove('has-value');
+				filterTOC('');
+				input.focus();
+			});
+
+			document.addEventListener('keydown', (e) => {
+				if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+					e.preventDefault();
+					if (window.innerWidth <= 900) openSidebar();
+					input.focus();
+					input.select();
+				}
+			});
+		}
+
+		// ============================================================
+		// MOBILE DRAWER
+		// ============================================================
+
+		function openSidebar() {
+			document.getElementById('sidebar').classList.add('open');
+			document.getElementById('backdrop').classList.add('visible');
+		}
+		function closeSidebar() {
+			document.getElementById('sidebar').classList.remove('open');
+			document.getElementById('backdrop').classList.remove('visible');
+		}
+		document.getElementById('menuBtn').addEventListener('click', () => {
+			const sb = document.getElementById('sidebar');
+			if (sb.classList.contains('open')) closeSidebar();
+			else openSidebar();
+		});
+		document.getElementById('backdrop').addEventListener('click', closeSidebar);
+
+		// ============================================================
+		// BOOT
+		// ============================================================
+
+		loadManual();
+	</script>
 </body>
 </html>
