@@ -2,7 +2,7 @@
 
 **App:** ShopTracker (SR80)
 **Version:** 1.4 (in development)
-**Last Updated:** 2026-06-01
+**Last Updated:** 2026-06-02
 ---
 
 ## Table of Contents
@@ -1356,6 +1356,8 @@ If nothing matches, you'll see "No Matching Items" instead of the grid.
 
 Tap the **scan icon** in the toolbar, point the camera at the sticker on your bench equipment, and the app jumps straight to that item's detail view. Full details — including what to do if a scan fails or a sticker needs reprinting — are in the **Equipment Tags** section near the end of this manual.
 
+On iPad there's also a yellow **Scan equipment** pill button right above the queue cards, just under any active filter chips. It does the same thing as the toolbar icon — it's there as a backup because on iOS 17 the toolbar icon can occasionally disappear during a long session, and rather than make the techs force-quit the app to get it back, the inline button is always reachable. If the toolbar icon ever vanishes, just use the inline pill — same scan flow.
+
 ### Adding Photos from the Tech Station
 
 When you open an item detail, you'll see a grid of photo thumbnails at the top of the info card (if any photos exist) along with **Camera** and **Library** buttons. Techs can add photos at any point during the repair — before starting, during disassembly, after the fix, or whenever something is worth documenting. Tapping **Camera** opens the continuous camera: tap the shutter as many times as you need, watch the thumbnails appear at the bottom of the screen, then tap **Done** when you're finished. No need to reopen the camera between shots.
@@ -1381,6 +1383,8 @@ The full markup toolbar is available: pens, markers, pencils, erasers, ruler, an
 ### Adding Notes from the Tech Station
 
 When you open an item detail from the tech queue, you'll see a **Notes** card between the item info and the test history. This works the same as on the front counter — type a note, tap the send arrow, and it's saved with the **device name** (e.g. "Back Shop Tech Station") and a timestamp.
+
+**Notes auto-save** about 10 seconds after you stop typing, so if your hands are greasy or you get pulled away mid-thought, the note still lands. Tapping the send arrow saves immediately if you don't want to wait. Navigating away from the item also commits whatever's in the field — half-typed notes don't get thrown out when you leave the screen.
 
 Notes attribute to the iPad, not to whoever is admin-unlocked. The shop iPads are shared between techs throughout the day, so showing the device is more truthful than showing the most recent admin login. Action events that *do* matter for accountability — Grabbed by, Pass/Fail by, Manage Techs, Cost edits — still show the assigned tech's name. Notes are the casual annotation channel, and the device is what's loadbearing for those.
 
@@ -1564,7 +1568,7 @@ To take a photo, use the regular **Camera** or **Library** buttons in the photo 
 
 **Tap each pill to check off what you actually did.** Selected pills turn green; unselected ones stay outlined. You can tap a green pill again to uncheck it if you made a mistake.
 
-If you select **Other**, a text field appears where you can describe the work that doesn't fit the standard categories.
+If you select **Other**, a text field appears where you can describe the work that doesn't fit the standard categories. The text **auto-saves** about 10 seconds after you stop typing, and also commits the moment you tap somewhere else — no save button to find.
 
 **You must check at least one item on the repair checklist AND have at least one photo taken during this repair round before you can tap Done.** You can do these in either order — check off work first and shoot photos later, or vice versa. If nothing is checked, the Done button is grayed out and you'll see an orange warning: "Check at least one before marking Done." This is so there's always a record of what was actually done to the item — same as the paper checklist Tony fills out today.
 
