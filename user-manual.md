@@ -199,6 +199,7 @@ Staff can install ShopTracker on their own iPhone or iPad. Setup uses a 6-digit 
 
 A personal phone behaves like its assigned role (a personal Tech Station looks just like the shop Tech Station iPad) but with a few extra protections layered on:
 
+- **Shop WiFi required.** Your personal phone must be connected to the shop's WiFi to use the app. If you leave the shop or disconnect from WiFi, you have a **15-minute grace period** before the app locks you out with a "Get your ass back to the shop" screen. Reconnect to the shop WiFi and it unlocks immediately. Some staff (owners, managers) are marked as **Unrestricted Access** — they can use the app from anywhere. Shop iPads are never affected by this restriction.
 - **Face ID / Touch ID gate.** The app asks for biometric (or your device passcode as a fallback) on cold launch, and again whenever the app has been backgrounded for more than **3 hours**. Brief context-switches — checking a notification, copying a phone number, looking up a parts diagram in another app — don't re-prompt.
 - **Active employee = active access.** If an admin deactivates your employee record, your phone signs out within a couple of minutes (usually within seconds if you're online). You'll need a fresh enrollment code to set it up again.
 - **Offline limit.** Your phone can stay offline (airplane mode, no signal, dead Wi-Fi) for up to **3 days** by default before it auto-signs-out. Admins can bump this longer before a hurricane or other extended outage.
@@ -1771,6 +1772,7 @@ Pull down to refresh the list.
    - **Can Test** — they'll show up in the tester picker when marking items as tested
    - **Can Do Oil Samples** — they'll show up in the "Performed By" picker on oil samples
    - **Front Counter** — marks them as Front Counter staff
+   - **Unrestricted Access** — lets this person use the app from anywhere, even off the shop WiFi. Use this for owners and managers who need remote access. Regular staff should leave this off.
 4. If this person needs admin access, turn on **Admin Access** in the Admin section below. They'll need a PIN.
 5. Tap **Add**
 
@@ -2028,6 +2030,19 @@ Below the registration row, Shop Settings has a **Personal Devices** section wit
 
 Shop iPads (Front Counter, Tech Station, Admin) are not affected by this setting. It only applies to personal devices enrolled via the BYOD flow.
 
+#### Network Access — Shop WiFi Requirement
+
+Below the offline grace window, the **Network Access** section controls whether personal devices must be connected to the shop WiFi to use the app.
+
+- **Require shop WiFi for personal devices** — Off by default. When turned on, personal phones must be on the shop's WiFi network to use the app. Staff who leave the building (or disconnect from WiFi) get a **15-minute grace period** before the app shows a lock screen. Reconnecting to WiFi unlocks immediately.
+- **Shop router IP** — appears when the toggle is on. This is the local IP address of the shop's router (default `192.168.1.1` for Starlink). The app checks whether it can reach this address to verify the phone is on the shop network. You shouldn't need to change this unless your network setup changes.
+
+**Who's exempt:** employees with the **Unrestricted Access** capability toggle (set in Admin → Employees) can use the app from anywhere regardless of this setting. Shop iPads are also never affected — this only applies to personal devices.
+
+**Emergency bypass:** if the shop's network is acting up and you don't want every staff phone locked out at once, flip this toggle off. Everyone gets in immediately. Flip it back on when the network is stable.
+
+**Hurricane / outage scenario:** if the shop loses internet entirely (Starlink down, power out), the app falls back to offline mode for everyone — the WiFi check doesn't apply when there's no network at all. If Starlink is down but the router is still powered (running on generator), personal devices on the local WiFi still pass the check even without internet.
+
 ### Manage Lists
 
 Manage Lists is where you control the dropdown options used throughout the app. Accessible from Admin Settings → **Manage Lists** under the "Shop" section.
@@ -2276,26 +2291,48 @@ This is distinct from **Retro-Close Work Orders** — that one's for entire jobs
 
 ### Deleting an Item from a Finalized Job (Admin Only)
 
-Sometimes a job gets finalized with an extra item — usually a double-tap during intake produced a duplicate, or someone added the wrong thing and didn't catch it until after check-in. The standard **Remove Item** button only works on drafts; once a job is finalized, that button is gone. An admin can delete a single bad item from a finalized job without nuking the whole job.
+Sometimes a job gets finalized with an extra item — usually a double-tap during intake produced a duplicate, or someone added the wrong thing and didn't catch it until after check-in. The standard **Remove Item** button only works on drafts; once a job is finalized, that button is gone. An admin can delete a single bad item from a finalized job without nuking the whole job — same friction model as **Delete Job**, just scoped to one item.
 
-**How to use it:**
+**How to get there:**
 
-1. Open the job from the Job Board (with admin unlocked — the orange "Admin Unlocked" banner should be visible at the top of the screen)
-2. Find the item you want to delete
-3. **Long-press the item card** (~0.5 second hold). The most reliable place to long-press is the equipment-detail text in the middle of the card (Equipment Type / Machine Type / Brand / Color / Description rows) — not on a photo, button, or the collapse toggle, those swallow the long-press
-4. A context menu appears with **Delete Item (Admin)** in red with a trash icon
-5. Tap it → the admin PIN prompt appears with a summary of exactly what's about to die. Example: *"This will permanently delete 20260602-19-2 (3 photos, 1 service reason). This cannot be undone."*
-6. Enter your PIN and tap **Delete Item**
+1. Open the sidebar and tap **Admin Settings**
+2. Scroll to the **Shop** section
+3. Tap **Delete Item** (the red one with the trash icon, right under **Delete Job**)
 
-The item is permanently removed, along with every photo, video, note, service reason, test, oil sample, and tech-history entry attached to it. The job itself stays put — only the one item is deleted.
+**The flow — five gates before anything dies:**
 
-**This is permanent and there is no undo.** The PIN sheet's summary is your last chance to bail — if the count of attached photos / videos / tests looks higher than you expected, that's a sign you may be about to delete an item that's been worked on. Tap Cancel and double-check.
+1. **Type the job number** in the first field (e.g. `20260602-19`). Case-sensitive — no picker, no search, you type it yourself as the first sanity check.
+2. **Type the item number** in the second field (e.g. `2`). Just the number — the same one you'd see after the dash in the item ref (`20260602-19-2`).
+3. Tap **Look Up**. A preview card shows the item's full reference, equipment line, status, and creation date. This is your "wait, is this the right one?" moment.
+4. If the preview looks right, tap the red **Delete This Item** button.
+5. A confirmation alert appears: **"Are you absolutely fucking sure?"** Two buttons: **Nope** (cancel) or **Hell yes I'm sure** (destructive).
+6. If you pick "Hell yes I'm sure," the admin PIN prompt appears. Enter your PIN.
 
-**When the context menu doesn't appear:**
+After the PIN clears, the item is gone. A success alert confirms with the item reference, then the form resets so you can either delete another or back out.
 
-- You're not on an admin device and admin elevation isn't active — unlock admin first (sidebar → Admin Settings → Unlock Admin, or the unlock pill in the toolbar). The orange "Admin Unlocked" banner has to be at the top of the screen
-- The job is a draft — use the existing inline **Remove Item** button under the item row instead
-- You long-pressed on a tappable element (a photo, the collapse toggle, an action button) — try the equipment-detail text area in the middle of the card
+**What gets deleted:**
+
+- The item row
+- All photos (database rows AND the actual image files in Storage)
+- All videos (the local-storage thumbnails get cleaned up too)
+- All tests, oil samples, repair history, tech assignments, and tech history
+- All notes, issue checks, and service reasons attached to that item
+- Audit log entry stamping which admin pulled the trigger
+
+The job itself stays put — only the one item is deleted.
+
+**When this won't work:**
+
+- No internet — Storage file cleanup can't run offline, so the whole action is blocked. The error message will say so.
+- Job number doesn't exist — lookup fails with "No job found."
+- Item number doesn't exist on that job — lookup fails with a count of how many items the job actually has (helpful for catching off-by-one mistakes).
+- Wrong PIN — same lockout behavior as any other admin action (five strikes and the device is locked out for a minute).
+
+**This is permanent and there is no undo.** If the preview card's status or equipment details don't match what you expected, that's a sign you may be about to delete the wrong item or one that's been worked on. Bail out and double-check.
+
+**Why isn't this on the item card itself anymore?**
+
+Earlier builds put **Delete Item** on a long-press context menu on the item card. That stomped on the long-press path for **rolling an item back a step** on the Repair History header — admins couldn't walk an item back without the delete menu hijacking the gesture. Moving the delete behind an admin-menu lookup keeps the long-press gesture lane free for rollback (and any other inline long-press surface on the item card).
 
 **What if the item has unique photos or notes I want to keep?**
 
