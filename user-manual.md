@@ -2,7 +2,7 @@
 
 **App:** ShopTracker (SR80)
 **Version:** 1.4 (in development)
-**Last Updated:** 2026-06-02
+**Last Updated:** 2026-06-08
 ---
 
 ## Table of Contents
@@ -80,7 +80,8 @@
   - [Force-Completing an Item (Admin Only)](#force-completing-an-item-admin-only)
   - [Deleting an Item from a Finalized Job (Admin Only)](#deleting-an-item-from-a-finalized-job-admin-only)
   - [Retro-Closing Open Work Orders (Admin Only)](#retro-closing-open-work-orders-admin-only)
-  - [Deleting a Job (Admin Only)](#deleting-a-job-admin-only)
+  - [Request Deletion (Admin)](#request-deletion-admin)
+  - [Pending Deletion Queue (Super Admin Only)](#pending-deletion-queue-super-admin-only)
   - [Reports](#reports)
   - [Resetting a Device](#resetting-a-device)
   - [Training Mode & Local Test Mode](#training-mode--local-test-mode)
@@ -1772,15 +1773,28 @@ Pull down to refresh the list.
    - **Can Test** — they'll show up in the tester picker when marking items as tested
    - **Can Do Oil Samples** — they'll show up in the "Performed By" picker on oil samples
    - **Front Counter** — marks them as Front Counter staff
-   - **Unrestricted Access** — lets this person use the app from anywhere, even off the shop WiFi. Use this for owners and managers who need remote access. Regular staff should leave this off.
-4. If this person needs admin access, turn on **Admin Access** in the Admin section below. They'll need a PIN.
-5. Tap **Add**
+4. If you're a **Super Admin** (see below), a **Privileges** section appears with **Admin Access**, **Unrestricted Access**, and **Super Admin** toggles. Set whichever this person needs. If you're not a Super Admin, this section is hidden — new employees start as regular techs and a Super Admin promotes them afterward.
+5. Tap **Add**. If you set any Privilege toggle, a Super Admin PIN prompt appears — the Privileges are only written after the PIN clears.
 
 The new employee will immediately appear in the pickers that match their capabilities. For example, if you only turn on "Can Assist" and "Can Do Oil Samples," they'll show up in the Manage Techs and oil sample pickers but never in the Grab or Testing pickers.
 
 #### Editing an Employee
 
 Tap any active employee in the list to open their edit form. You can change their name or toggle any of their capabilities on or off. Tap **Save** when done. Changes take effect immediately — if you turn off "Can Grab Jobs," that person disappears from the Grab picker right away.
+
+If you're a Super Admin, you'll also see the **Privileges** section (Admin Access, Unrestricted Access, Super Admin). Changes to anything in that section trigger a Super Admin PIN prompt when you tap Save — capability and name changes still go through on the regular admin path, so editing a non-Privileged field doesn't require the extra PIN.
+
+#### Super Admins (Privileges)
+
+A **Super Admin** is an admin with one extra power: the ability to grant or revoke the four privileged flags on any employee record — **Admin Access**, **Unrestricted Access**, **Super Admin** itself, and the **Pending Deletion** powers (Restore, Purge, Close — see [Pending Deletion Queue](#pending-deletion-queue-super-admin-only) below). The shop's Super Admins are Bec, Jamie, and Lee.
+
+A few things to know:
+
+- **A regular admin can still do everything they always could** — close jobs, retro-close, force-complete, manage employees' names and capabilities, all of it. The only thing they can't do is change Privileges or work the Pending Deletion queue.
+- **The Privileges section is invisible to non-Super-Admins.** A regular admin editing another employee won't see the toggles at all, so there's no "tap to fail" trap.
+- **Every Privilege change is server-verified.** Even if a device somehow tried to write a Privilege column directly, the database refuses it — only the Super Admin PIN gate on the dedicated update path can change these flags. Audit log entries are written for every Privilege change with the before/after values.
+- **The "last Super Admin" guard.** If you try to demote the only remaining active Super Admin, the save fails with "At least one active Super Admin must remain." This is a server-side safety so the shop can never lose all Super Admins.
+- **Promoting Lee or anyone else.** Lee is set up as a Super Admin but currently a regular tech — to make his Super Admin powers usable, Bec (or Jamie) opens his record, turns on **Admin Access**, and saves with a Super Admin PIN. After that he sets up a PIN like any other admin and can act on the queue.
 
 #### Setting Up an Admin's PIN
 
@@ -2037,7 +2051,7 @@ Below the offline grace window, the **Network Access** section controls whether 
 - **Require shop WiFi for personal devices** — Off by default. When turned on, personal phones must be on the shop's WiFi network to use the app. Staff who leave the building (or disconnect from WiFi) get a **15-minute grace period** before the app shows a lock screen. Reconnecting to WiFi unlocks immediately.
 - **Shop router IP** — appears when the toggle is on. This is the local IP address of the shop's router (default `192.168.1.1` for Starlink). The app checks whether it can reach this address to verify the phone is on the shop network. You shouldn't need to change this unless your network setup changes.
 
-**Who's exempt:** employees with the **Unrestricted Access** capability toggle (set in Admin → Employees) can use the app from anywhere regardless of this setting. Shop iPads are also never affected — this only applies to personal devices.
+**Who's exempt:** employees with the **Unrestricted Access** toggle (set under **Privileges** in Admin → Employees — only Super Admins can change it) can use the app from anywhere regardless of this setting. Shop iPads are also never affected — this only applies to personal devices.
 
 **Emergency bypass:** if the shop's network is acting up and you don't want every staff phone locked out at once, flip this toggle off. Everyone gets in immediately. Flip it back on when the network is stable.
 
@@ -2291,22 +2305,29 @@ This is distinct from **Retro-Close Work Orders** — that one's for entire jobs
 
 ### Deleting an Item from a Finalized Job (Admin Only)
 
-Sometimes a job gets finalized with an extra item — usually a double-tap during intake produced a duplicate, or someone added the wrong thing and didn't catch it until after check-in. The standard **Remove Item** button only works on drafts; once a job is finalized, that button is gone. An admin can delete a single bad item from a finalized job without nuking the whole job — same friction model as **Delete Job**, just scoped to one item.
+Sometimes a job gets finalized with an extra item — usually a double-tap during intake produced a duplicate, or someone added the wrong thing and didn't catch it until after check-in. The standard **Remove Item** button only works on drafts; once a job is finalized, that button is gone. Any **Admin** can purge a single bad item from a finalized job without nuking the whole job. This is a direct hard delete — there's no queue, no soft-delete stage — but it requires an admin PIN and a logged reason, and a record of the deletion stays on the job permanently with the admin's name on it.
+
+Briefly during this development cycle, Delete Item was gated to Super Admin only. That was wrong — items are smaller-blast-radius than whole jobs, and routing every bad-intake fix through Bec/Jamie/Lee was friction without benefit. It's back to regular Admin. The Super Admin gate stays on the Pending Deletion queue's Purge/Restore/Close actions, where it belongs (those touch whole jobs).
 
 **How to get there:**
 
 1. Open the sidebar and tap **Admin Settings**
 2. Scroll to the **Shop** section
-3. Tap **Delete Item** (the red one with the trash icon, right under **Delete Job**)
+3. Tap **Delete Item** (the red one with the trash icon)
 
-**The flow — five gates before anything dies:**
+**The flow — six gates before anything dies:**
 
 1. **Type the job number** in the first field (e.g. `20260602-19`). Case-sensitive — no picker, no search, you type it yourself as the first sanity check.
 2. **Type the item number** in the second field (e.g. `2`). Just the number — the same one you'd see after the dash in the item ref (`20260602-19-2`).
 3. Tap **Look Up**. A preview card shows the item's full reference, equipment line, status, and creation date. This is your "wait, is this the right one?" moment.
-4. If the preview looks right, tap the red **Delete This Item** button.
-5. A confirmation alert appears: **"Are you absolutely fucking sure?"** Two buttons: **Nope** (cancel) or **Hell yes I'm sure** (destructive).
-6. If you pick "Hell yes I'm sure," the admin PIN prompt appears. Enter your PIN.
+4. Pick a **Reason** from the dropdown:
+   - **Duplicate** — same item saved twice on the same job.
+   - **Added in error** — the wrong thing got added, or an accidental tap during intake.
+   - **Wrong item** — the customer's actual item isn't what's on this row (mis-identification at check-in).
+   - **Other** — anything else. A free-text detail field is **required** for this option so the record on the job has context. Optional notes are allowed (but not required) for any of the other reasons.
+5. Tap the red **Delete This Item** button. (It's disabled until you've picked a reason — and if you picked Other, until you've typed a detail.)
+6. A confirmation alert appears: **"Are you absolutely fucking sure?"** Two buttons: **Nope** (cancel) or **Hell yes I'm sure** (destructive).
+7. If you pick "Hell yes I'm sure," an **admin PIN** prompt appears. Enter your own PIN — the tombstone is stamped with the specific admin whose PIN unlocked the delete (PINs are per-employee), so don't borrow someone else's.
 
 After the PIN clears, the item is gone. A success alert confirms with the item reference, then the form resets so you can either delete another or back out.
 
@@ -2317,22 +2338,28 @@ After the PIN clears, the item is gone. A success alert confirms with the item r
 - All videos (the local-storage thumbnails get cleaned up too)
 - All tests, oil samples, repair history, tech assignments, and tech history
 - All notes, issue checks, and service reasons attached to that item
-- Audit log entry stamping which admin pulled the trigger
+- Audit log entry stamping which admin pulled the trigger plus the reason they picked
 
 The job itself stays put — only the one item is deleted.
 
+**What gets kept:**
+
+A small permanent record (a "tombstone") is written for every item deleted this way. It lives at the bottom of the affected Job Detail under a **Deleted Items** section that only appears when the job has at least one tombstone. Each entry reads **"Deleted by {admin's name} — {reason} — {timestamp}"** with the item descriptor on the line above and the free-text detail underneath if you picked Other. The name comes from the employee record of whoever entered the admin PIN; if that record has been removed since (rare), the device label shows as a fallback, then "Unknown." The tombstone survives even if the whole job is later purged from the Pending Deletion queue — so the audit trail is durable. There's no way to remove a tombstone from the app.
+
 **When this won't work:**
 
+- You're not an admin — the Admin Settings screen isn't reachable in the first place.
 - No internet — Storage file cleanup can't run offline, so the whole action is blocked. The error message will say so.
 - Job number doesn't exist — lookup fails with "No job found."
 - Item number doesn't exist on that job — lookup fails with a count of how many items the job actually has (helpful for catching off-by-one mistakes).
 - Wrong PIN — same lockout behavior as any other admin action (five strikes and the device is locked out for a minute).
+- Reason is "Other" with no detail — the Delete This Item button stays disabled until you add a detail line.
 
 **This is permanent and there is no undo.** If the preview card's status or equipment details don't match what you expected, that's a sign you may be about to delete the wrong item or one that's been worked on. Bail out and double-check.
 
 **Why isn't this on the item card itself anymore?**
 
-Earlier builds put **Delete Item** on a long-press context menu on the item card. That stomped on the long-press path for **rolling an item back a step** on the Repair History header — admins couldn't walk an item back without the delete menu hijacking the gesture. Moving the delete behind an admin-menu lookup keeps the long-press gesture lane free for rollback (and any other inline long-press surface on the item card).
+Earlier builds put **Delete Item** on a long-press context menu on the item card. That stomped on the long-press path for **rolling an item back a step** on the Repair History header — admins couldn't walk an item back without the delete menu hijacking the gesture. Moving the delete behind an admin-menu lookup keeps the long-press gesture lane free for rollback (and any other inline long-press surface on the item card). The display-only **Deleted Items** section at the bottom of Job Detail is just a history readout — there's no delete affordance there either.
 
 **What if the item has unique photos or notes I want to keep?**
 
@@ -2361,54 +2388,117 @@ Each close attribution shows the admin who PIN'd in. Items land at **Admin Retro
 
 **Reminder:** Don't use retro-close for items that just got stuck on the cost-entry step. Those should use **Force-Complete** above — lands them at Complete (the normal flow's terminal-ready state) so the close looks identical to a natural completion.
 
-### Deleting a Job (Admin Only)
+### Request Deletion (Admin)
 
-For accidental duplicates and test data that slipped through the cracks. **This is permanent and there is no undo.** Deliberately buried at the bottom of the Shop section with friction at every step so nobody nukes a real job by muscle memory.
+Job deletion is now **two stages**. Any admin can *request* a deletion — that hides the job from every board and report but doesn't destroy anything. A **Super Admin** then resolves the request from the Pending Deletion queue (Restore, Purge, or Close). This replaces the old one-step "Delete Job" flow — same screen, new behavior. The full destructive purge still exists but now lives only at the back of the queue, gated on a Super Admin PIN.
 
 **How to get there:**
 
 1. Open the sidebar and tap **Admin Settings**
 2. Scroll to the **Shop** section
-3. Tap **Delete Job** (the red one with the trash icon, last in the list)
+3. Tap **Request Deletion** (the red one with the trash icon)
 
-**The flow — five gates before anything dies:**
+**The flow:**
 
-1. **Type the job number manually** in the text field (e.g. `20260518-2`). There's no picker and no search on purpose — typing the number yourself is the first sanity check. Case-sensitive.
+1. **Type the job number manually** in the text field (e.g. `20260518-2`). There's no picker and no search on purpose — typing the number yourself is a sanity check. Case-sensitive.
 2. Tap **Look Up**. A preview card shows the customer, company, warranty/draft/test badges, creation date, and every item on the job with its status. This is your "wait, is this the right one?" moment.
-3. If the preview looks right, tap the red **Delete This Job** button.
-4. A confirmation alert appears: **"Are you absolutely fucking sure?"** Two buttons: **Nope** (cancel) or **Hell yes I'm sure** (destructive).
-5. If you pick "Hell yes I'm sure," the admin PIN prompt appears. Enter your PIN.
+3. Pick a **Reason** from the dropdown:
+   - **Duplicate** — same work order saved twice.
+   - **Customer walked out** — the customer left before any work happened.
+   - **Created in error** — wrong customer, accidental tap, typo while testing.
+   - **Merged into another job** — the work moved to another job number.
+   - **Other** — anything else. A free-text detail field is **required** for this option so the Super Admin reviewing the queue has context. Optional notes are allowed (but not required) for any of the other reasons.
+4. Tap the red **Request Deletion** button.
+5. A confirmation alert appears: **"Move to Pending Deletion?"** Tap **Move to Pending Deletion** to continue, or Cancel to back out.
+6. Enter your **admin PIN**.
 
-After the PIN clears, the job is gone. A success alert confirms with the job number you deleted, then the form resets to empty.
+After the PIN clears, a success alert confirms the job is now in the queue. The form resets and the job is immediately hidden from the boards, customer history, reports, and the tech queue everywhere in the shop. The local cache for that job is also cleared so it stops showing up offline.
 
-**What gets deleted:**
+**What happens to the job:**
 
-- The job row
-- Every item on the job
-- All photos (database rows AND the actual image files in Storage)
-- All videos (the local-storage thumbnails get cleaned up too)
-- All tests, oil samples, repair history, tech assignments, and tech history
-- All notes and issue checks
-- All material lines (hoses, fittings, adapters, seals)
-- All flag history tied to the job or its items
-- Audit log entry stamping which admin pulled the trigger, with item/photo/video counts
+- It's still in the database — nothing is destroyed at this stage.
+- `deleted_at`, the reason, the optional detail, your employee credit, and your device's name are stamped on the row.
+- The audit log gets a `job_deletion_requested` entry.
+- A Super Admin can now **Restore** it back to the boards, **Purge** it permanently, or **Close** it (only when the total is $0).
 
 **When this won't work:**
 
-- No internet — Storage file cleanup can't run offline, so the whole action is blocked. The error message will say so.
+- No internet — the request can't run offline. The error message will say so.
 - Job number doesn't exist — lookup fails with "No job found."
+- Job already requested — the server replies "Job already pending deletion." Open the Pending Deletion queue to resolve the existing request.
+- Reason is "Other" with no detail — the Request Deletion button stays disabled until you add a detail line.
 - Wrong PIN — same lockout behavior as any other admin action (five strikes and the device is locked out for a minute).
 
 **When to use vs. not use:**
 
 - ✅ Test data that should never have been saved (a draft you experimented with, a real job number burned during testing)
-- ✅ A duplicate work order you created by accident
-- ✅ A job from years ago that's polluting reports and isn't worth preserving
-- ❌ A real job you don't like the look of — close it instead, or use Force-Complete / Retro-Close if the workflow got skipped
-- ❌ A warranty job whose parent reference matters — deletion sets the parent reference on any child warranty jobs to null, which makes the warranty chain harder to follow later
-- ❌ A job a customer just picked up — the customer's history record vanishes too
+- ✅ A duplicate work order created by accident
+- ✅ A walk-out where no work happened
+- ✅ A job that got merged into another job number
+- ❌ A real job you don't like the look of — close it through the normal Complete & Pickup flow instead
+- ❌ A workflow that just got skipped — use Force-Complete or Retro-Close to land it in normal closed history
+- ❌ A job a customer just picked up — the request will hide it from their history while it sits in the queue
 
-The action is logged in the audit table with the admin's employee ID, the job number, and counts of what got deleted, so there's a paper trail even after the rows are gone.
+If you change your mind, ask a Super Admin to Restore it from the queue.
+
+### Pending Deletion Queue (Super Admin Only)
+
+The Pending Deletion queue is where deletion requests go to be resolved. Only **Super Admins** (Bec, Jamie, Lee) see this row in the Shop section — a regular admin's Admin Settings won't show it at all.
+
+**How to get there:**
+
+1. Open the sidebar and tap **Admin Settings**
+2. Scroll to the **Shop** section
+3. Tap **Pending Deletion** (the red row with the tray icon, right below Delete Item)
+
+**The queue list** shows every soft-deleted job, newest first. Each row carries:
+
+- Job number and customer/company display name
+- Reason (and the detail line if there is one)
+- "by `<name> — <device>`" — the admin who requested the deletion plus the device they used
+- ET-formatted timestamp of when the request landed
+
+Pull down to refresh. If the iPad is offline, the list shows "Offline — connect to load the queue."
+
+**Tap a row** to open the detail screen. You'll see the job + reason + requester information again, the job's current **total**, and three resolution actions.
+
+#### Restore
+
+Un-deletes the job and puts it back on the boards immediately.
+
+1. Tap **Restore**.
+2. Enter a **Super Admin PIN**.
+
+The job reappears everywhere — board, customer history, reports, tech queue. The queue row is removed. An audit log `job_restored` entry is written.
+
+#### Purge
+
+The real, irreversible delete. Everything dies — items, photos (database rows + Storage files), videos (rows + thumbnails), tests, oil samples, repair history, tech assignments, notes, issue checks, material lines, flag history. The job number can never be revived.
+
+1. Tap the red **Purge** button.
+2. A confirmation alert reads "Purge this job? This is permanent. Items, photos, videos, notes, tests, and materials will be deleted. There is no undo." Tap **Continue to PIN** to keep going, or Cancel to back out.
+3. Enter a **Super Admin PIN**.
+
+After the PIN clears, the job is gone and the Storage cleanup runs (best-effort — if a few orphan photo files don't get deleted from Storage, they're harmless). An audit log `job_purged` entry stamps the action with item / photo / video counts.
+
+A regular admin's PIN won't work here even if they typed it correctly — the queue actions are Super Admin only, server-side.
+
+#### Close ($0 only)
+
+If a job total is exactly **$0**, you can close it instead of purging — that lands it in normal closed history as if it had been closed through the front counter, with the items marked as admin-retro-closed.
+
+1. Tap **Close ($0 only)**. The button is disabled with a footer explanation ("Total is not $0 ($XX.XX). Purge or restore instead.") when the job has any cost.
+2. Enter a **Super Admin PIN**.
+
+The items retro-close with no zone assignment, the job's deletion-queue fields are cleared, and the job appears in Closed Jobs as a normal $0 closure. Audit log: `job_deletion_closed`. This is the right move for jobs the customer walked out on or test jobs that have zero cost — it preserves the historical record without leaving them in limbo.
+
+**When to use which:**
+
+- **Restore** when the deletion request was wrong, the customer came back, or the job is needed for warranty / history.
+- **Purge** for true junk: test data, duplicates that were never billed, accidental jobs that have no business being in history.
+- **Close** for $0 jobs you want kept as historical records (walk-outs, training data you decided to keep visible, test jobs you want closed-out cleanly).
+
+Every action is logged with the Super Admin's employee ID and the device they used.
 
 ### Reports
 
